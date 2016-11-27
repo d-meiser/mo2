@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.0.2)
-cmake_policy(SET CMP0048 OLD)
+cmake_minimum_required(VERSION 2.8.0)
+if (NOT(CMAKE_MAJOR_VERSION LESS 3))
+  cmake_policy(SET CMP0048 OLD)
+endif ()
 project(Mo2)
 
 
