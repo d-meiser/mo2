@@ -24,3 +24,8 @@ TEST(Image, PitchIsBoundedFromBelowByImageWidth) {
   EXPECT_GE(image.pitch(), image.numComponents() * image.width());
 }
 
+TEST(Image, CanSaveImage) {
+  Mo::Image image(testFile("test_image_1.jpg").c_str());
+  EXPECT_NO_THROW(image.save("saved_file.jpg"));
+}
+

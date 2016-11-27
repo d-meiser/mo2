@@ -32,6 +32,7 @@ private:
   std::vector<Byte> pixelData_;
 
   void readJpegFile(const char *filename);
+  void saveJpegFile(const char *filename);
 };
 
 }
