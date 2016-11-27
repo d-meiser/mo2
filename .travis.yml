@@ -1,0 +1,28 @@
+sudo: false
+language: cpp
+compiler:
+  - gcc
+  - clang
+
+addons:
+  apt:
+    packages:
+    - cmake
+    - lcov
+
+before_install:
+  - if [ "$CC" == "clang" ] ; then export CXX=clang++ ; fi
+  - gem install coveralls-lcov
+  - sh ./utilities/download_gtest.sh
+script:
+  - mkdir -p build
+  - cd build
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DMO_ENABLE_COVERAGE=ON -DMO_BUILD_TESTS=ON  -Dgtest_disable_pthreads=ON ..
+  - make -j2
+  - ctest -j2 --output-on-failure
+after_success:
+  - lcov -d tests -d src -base-directory .. -c -o coverage.info
+  - lcov --remove coverage.info '/usr/*' -o coverage.info
+  - lcov --remove coverage.info 'gtest*' -o coverage.info
+  - cd ..
+  - coveralls-lcov build/coverage.info
