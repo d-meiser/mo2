@@ -16,8 +16,6 @@ option(MO_WITH_ADDRESS_SANITIZER "Whether to build with address sanitizer enable
 option(MO_WITH_WALL_FLAGS "Whether to compile with all warning flags." ON)
 option(MO_WITH_PEDANTIC_FLAGS "Whether to compile with pedantic flags." OFF)
 option(MO_WITH_WARNING_AS_ERRORS "Whether to treat compiler warnings as errors." ON)
-option(MO_WITH_MPI "Whether we're building with MPI support" OFF)
-option(MO_WITH_GUILE "Whether to build guile bindings" OFF)
 
 if (MO_WITH_ADDRESS_SANITIZER)
   set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
