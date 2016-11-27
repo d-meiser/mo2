@@ -13,6 +13,7 @@ generate_export_header(test_utilities)
 
 set(TESTS
     image_test
+    run_configuration_test
     tile_test
    )
 
