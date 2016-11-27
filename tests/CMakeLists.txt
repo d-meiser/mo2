@@ -9,7 +9,7 @@ set(TESTS
 
 foreach(t ${TESTS})
   add_executable(${t} ${t}.cpp)
-  target_link_libraries(${t} gtest_main)
+  target_link_libraries(${t} mo_lib gtest_main)
   add_test(${t} ${t})
 endforeach()
 

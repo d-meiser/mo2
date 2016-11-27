@@ -9,6 +9,7 @@ namespace Mo {
 class Image {
 public:
   Image(const char* filename);
+  ~Image();
   void save(const char* filename);
   char *getPixelData();
   const char *getConstPixelData() const;
