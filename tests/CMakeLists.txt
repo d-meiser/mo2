@@ -13,6 +13,7 @@ generate_export_header(test_utilities)
 
 set(TESTS
     image_test
+    tile_test
    )
 
 foreach(t ${TESTS})
