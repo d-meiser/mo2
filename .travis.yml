@@ -17,8 +17,8 @@ before_install:
 script:
   - mkdir -p build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DMO_ENABLE_COVERAGE=ON -DMO_BUILD_TESTS=ON  -Dgtest_disable_pthreads=ON ..
-  - make -j2
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DMO_ENABLE_COVERAGE=ON -DMO_BUILD_TESTS=ON -DBUILD_GTEST=ON -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON -Dgtest_hide_internal_symbols ..
+  - make -j2 VERBOSE=1
   - ctest -j2 --output-on-failure
 after_success:
   - lcov -d tests -d src -base-directory .. -c -o coverage.info
