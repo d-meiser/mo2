@@ -58,7 +58,7 @@ before_install:
 script:
   - mkdir -p build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DMO_ENABLE_COVERAGE=ON -DMO_BUILD_TESTS=ON -DBUILD_GTEST=ON -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON -Dgtest_hide_internal_symbols=ON -DCMAKE_CXX_COMPILER=${COMPILER} ..
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DMO_ENABLE_COVERAGE=ON -DMO_BUILD_TESTS=ON -DBUILD_GTEST=ON -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON -Dgtest_hide_internal_symbols=ON -DCMAKE_CXX_COMPILER=${COMPILER} -DBUILD_SHARED_LIBS=ONn -DMO_WITH_ADDRESS_SANITIZER=ON -DMO_WITH_WALL_FLAGS=ON -DMO_WITH_PEDANTIC_FLAGS=ON -DMO_WITH_WARNING_AS_ERRORS=ON..
   - make -j2 VERBOSE=1
   - ctest -j2 --output-on-failure
 after_success:
