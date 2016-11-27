@@ -2,12 +2,14 @@ include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${gtest_SOURCE_DIR}/include
     )
 
 add_library(test_utilities
     test_utilities.cpp
     )
+generate_export_header(test_utilities)
 
 set(TESTS
     image_test

@@ -1,11 +1,10 @@
-cmake_minimum_required(VERSION 2.6.2)
-if (NOT(CMAKE_MAJOR_VERSION LESS 3))
-  cmake_policy(SET CMP0048 OLD)
-endif ()
+cmake_minimum_required(VERSION 3.0.2)
+cmake_policy(SET CMP0048 OLD)
 project(Mo2)
 
 
 include(CheckCXXCompilerFlag)
+include(GenerateExportHeader)
 
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
@@ -20,6 +19,11 @@ option(MO_WITH_WALL_FLAGS "Whether to compile with all warning flags." ON)
 option(MO_WITH_PEDANTIC_FLAGS "Whether to compile with pedantic flags." OFF)
 option(MO_WITH_WARNING_AS_ERRORS "Whether to treat compiler warnings as errors." ON)
 
+
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+
+
 if (MO_WITH_ADDRESS_SANITIZER)
   set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
   set(CMAKE_REQUIRED_FLAGS "-fsanitize=address")
@@ -33,7 +37,6 @@ endif ()
 if (CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
   if (MO_ENABLE_COVERAGE)
     add_definitions("-ftest-coverage -fprofile-arcs")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftest-coverage -fprofile-arcs")
@@ -61,3 +64,9 @@ if (MO_BUILD_TESTS)
 endif ()
 
 configure_file(mo2_config.h.in ${PROJECT_BINARY_DIR}/mo2_config.h)
+generate_export_header(mo_lib)
+
+set(HEADERS
+    ${PROJECT_BINARY_DIR}/mo2_config.h
+    )
+install(FILES ${HEADERS} DESTINATION include)

@@ -5,10 +5,12 @@
 #include <vector>
 #include <cstdint>
 
+#include <mo_lib_export.h>
+
 
 namespace Mo {
 
-class Image {
+class MO_LIB_EXPORT Image {
 public:
   typedef uint8_t Byte;
 
