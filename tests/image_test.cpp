@@ -14,3 +14,13 @@ TEST(Image, HasCorrectWidth) {
   EXPECT_EQ(30, image.width());
 }
 
+TEST(Image, ColorImagesHaveThreeOrFourComponents) {
+  Mo::Image image(testFile("test_image_1.jpg").c_str());
+  EXPECT_TRUE(4 == image.numComponents() || 3 == image.numComponents());
+}
+
+TEST(Image, PitchIsBoundedFromBelowByImageWidth) {
+  Mo::Image image(testFile("test_image_1.jpg").c_str());
+  EXPECT_GE(image.pitch(), image.numComponents() * image.width());
+}
+

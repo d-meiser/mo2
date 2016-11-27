@@ -128,4 +128,5 @@ void Image::readJpegFile(const char *filename) {
   fclose(infile);
 }
 
-}
+} // namespace Mo
+
