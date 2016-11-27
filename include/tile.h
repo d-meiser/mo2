@@ -1,6 +1,9 @@
 #ifndef TILE_H
 #define TILE_H
 
+#include <memory>
+
+
 namespace Mo {
 
 class Image;
@@ -10,7 +13,7 @@ struct Tile {
   float y_;
   float angle_;
   float scale_;
-  Image* image_;
+  std::unique_ptr<Image> image_;
 };
 
 }

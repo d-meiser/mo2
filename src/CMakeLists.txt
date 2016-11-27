@@ -8,9 +8,18 @@ find_package(JPEG)
 
 add_library(mo_lib
     image.cpp
+    mosaic.cpp
     run_configuration.cpp
     )
 target_link_libraries(mo_lib
     ${JPEG_LIBRARIES}
+    )
+
+add_executable(mo2 mo2.cpp)
+target_link_libraries(mo2 mo_lib)
+add_test(mo2 mo2
+    -t ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
+    ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
+    ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
     )
 
