@@ -5,6 +5,9 @@ endif ()
 project(Mo2)
 
 
+include(CheckCXXCompilerFlag)
+
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 enable_testing()
