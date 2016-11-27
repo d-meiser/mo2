@@ -60,3 +60,4 @@ if (MO_BUILD_TESTS)
   add_subdirectory(tests)
 endif ()
 
+configure_file(mo2_config.h.in ${PROJECT_BINARY_DIR}/mo2_config.h)

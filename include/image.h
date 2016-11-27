@@ -2,12 +2,16 @@
 #define IMAGE_H
 
 #include <memory>
+#include <vector>
+#include <cstdint>
 
 
 namespace Mo {
 
 class Image {
 public:
+  typedef uint8_t Byte;
+
   Image(const char* filename);
   ~Image();
   void save(const char* filename);
@@ -16,10 +20,16 @@ public:
   int width() const;
   int height() const;
   int pitch() const;
+  int numComponents() const;
 
 private:
-  class Impl;
-  std::unique_ptr<Impl> impl_;
+  int width_;
+  int height_;
+  int pitch_;
+  int numComponents_;
+  std::vector<Byte> pixelData_;
+
+  void readJpegFile(const char *filename);
 };
 
 }

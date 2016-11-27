@@ -1,0 +1,2 @@
+#define MO_TEST_ROOT_DIR "@PROJECT_BINARY_DIR@/tests"
+
