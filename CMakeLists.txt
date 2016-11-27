@@ -55,8 +55,6 @@ endif ()
 
 add_subdirectory(src)
 if (MO_BUILD_TESTS)
-  set(BUILD_GMOCK OFF)
-  set(BUILD_GTEST ON)
   add_subdirectory(googletest-release-1.8.0)
   add_subdirectory(tests)
 endif ()
