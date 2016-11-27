@@ -51,6 +51,7 @@ addons:
     packages:
     - cmake
     - lcov
+    - libjpeg-dev
 
 before_install:
   - gem install coveralls-lcov
