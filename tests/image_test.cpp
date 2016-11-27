@@ -29,3 +29,9 @@ TEST(Image, CanSaveImage) {
   EXPECT_NO_THROW(image.save("saved_file.jpg"));
 }
 
+TEST(Image, CanSetQuality) {
+  Mo::Image image(testFile("test_image_1.jpg").c_str());
+  image.setQuality(30);
+  EXPECT_NO_THROW(image.save("saved_file_2.jpg"));
+}
+

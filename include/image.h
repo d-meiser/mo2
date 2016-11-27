@@ -23,12 +23,15 @@ public:
   int height() const;
   int pitch() const;
   int numComponents() const;
+  void setQuality(int quality);
+  int quality() const;
 
 private:
   int width_;
   int height_;
   int pitch_;
   int numComponents_;
+  int quality_;
   std::vector<Byte> pixelData_;
 
   void readJpegFile(const char *filename);

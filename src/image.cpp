@@ -8,7 +8,7 @@
 
 namespace Mo {
 
-Image::Image(const char* filename) {
+Image::Image(const char* filename) : quality_(90) {
   readJpegFile(filename);
 }
 
@@ -32,6 +32,14 @@ int Image::pitch() const {
 
 int Image::numComponents() const {
   return numComponents_;
+}
+
+void Image::setQuality(int quality) {
+  quality_ = quality;
+}
+
+int Image::quality() const {
+  return quality_;
 }
 
 void Image::readJpegFile(const char *filename) {
@@ -95,7 +103,7 @@ void Image::saveJpegFile(const char *filename) {
 
   jpeg_set_defaults(&cinfo);
   cinfo.dct_method = JDCT_FLOAT;
-  jpeg_set_quality(&cinfo, 15, TRUE);
+  jpeg_set_quality(&cinfo, quality_, TRUE);
   jpeg_start_compress( &cinfo, TRUE );
   while (cinfo.next_scanline < cinfo.image_height) {
     row_pointer[0] = &pixelData_[cinfo.next_scanline *
