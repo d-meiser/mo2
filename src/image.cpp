@@ -8,8 +8,8 @@
 
 namespace Mo {
 
-Image::Image(const char* filename) : quality_(90) {
-  readJpegFile(filename);
+Image::Image(const std::string& filename) : quality_(90) {
+  readJpegFile(filename.c_str());
 }
 
 Image::Image(int width, int height) :
@@ -19,8 +19,8 @@ Image::Image(int width, int height) :
 
 Image::~Image() {}
 
-void Image::save(const char* filename) {
-  saveJpegFile(filename);
+void Image::save(const std::string& filename) {
+  saveJpegFile(filename.c_str());
 }
 
 int Image::width() const {

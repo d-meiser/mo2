@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 #include <cstdint>
 
 #include <mo_lib_export.h>
@@ -14,10 +15,10 @@ class MO_LIB_EXPORT Image {
 public:
   typedef uint8_t Byte;
 
-  Image(const char* filename);
+  Image(const std::string& filename);
   Image(int width, int height);
   ~Image();
-  void save(const char* filename);
+  void save(const std::string& filename);
   char *getPixelData();
   const char *getConstPixelData() const;
   int width() const;
