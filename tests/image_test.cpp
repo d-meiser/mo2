@@ -9,6 +9,10 @@ TEST(Image, CanBeConstructedFromFileName) {
   Mo::Image image(testFile("test_image_1.jpg").c_str());
 }
 
+TEST(Image, CanBeConstructedFromDimensions) {
+  Mo::Image image(50, 30);
+}
+
 TEST(Image, HasCorrectWidth) {
   Mo::Image image(testFile("test_image_1.jpg").c_str());
   EXPECT_EQ(30, image.width());

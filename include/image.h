@@ -15,6 +15,7 @@ public:
   typedef uint8_t Byte;
 
   Image(const char* filename);
+  Image(int width, int height);
   ~Image();
   void save(const char* filename);
   char *getPixelData();

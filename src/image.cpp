@@ -12,6 +12,11 @@ Image::Image(const char* filename) : quality_(90) {
   readJpegFile(filename);
 }
 
+Image::Image(int width, int height) :
+  width_(width), height_(height), pitch_(3 * width), numComponents_(3),
+  quality_(90), pixelData_(pitch_ * height_) {
+}
+
 Image::~Image() {}
 
 void Image::save(const char* filename) {
