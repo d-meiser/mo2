@@ -12,8 +12,12 @@ add_library(test_utilities
 generate_export_header(test_utilities)
 
 set(TESTS
+    badnesscomposite_test
     image_test
+    interactiontileborder_test
+    interactiontiletile_test
     mosaic_test
+    quadrature_test
     run_configuration_test
     tile_test
    )

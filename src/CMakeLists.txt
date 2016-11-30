@@ -7,7 +7,11 @@ INCLUDE_DIRECTORIES(
 find_package(JPEG)
 
 add_library(mo_lib
+    badnesscomposite.cpp
     image.cpp
+    interactionhelpers.cpp
+    interactiontileborder.cpp
+    interactiontiletile.cpp
     mosaic.cpp
     run_configuration.cpp
     )

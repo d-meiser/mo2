@@ -16,4 +16,24 @@ Mosaic::Mosaic(
       });
 }
 
+int Mosaic::size() const {
+  return tiles_.size();
+}
+
+std::vector<Tile>::iterator Mosaic::tilesBegin() {
+  return tiles_.begin();
+}
+
+std::vector<Tile>::iterator Mosaic::tilesEnd() {
+  return tiles_.end();
+}
+
+std::vector<Tile>::const_iterator Mosaic::cTilesBegin() const {
+  return tiles_.cbegin();
+}
+
+std::vector<Tile>::const_iterator Mosaic::cTilesEnd() const {
+  return tiles_.cend();
+}
+
 }
