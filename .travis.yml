@@ -34,6 +34,7 @@ addons:
 before_install:
   - gem install coveralls-lcov
   - sh ./utilities/download_gtest.sh
+  - sh ./utilities/download_glfw.sh
 script:
   - mkdir -p build
   - cd build
