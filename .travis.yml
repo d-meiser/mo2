@@ -19,7 +19,6 @@ addons:
       - libxcursor-dev
       - xorg-dev
       - libglu1-mesa-dev
-      - libXxf86vm-dev
 before_install:
   - gem install coveralls-lcov
   - sh ./utilities/download_gtest.sh
