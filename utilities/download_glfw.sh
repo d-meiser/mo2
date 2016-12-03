@@ -1,5 +1,6 @@
 #!/bin/sh
 
-wget https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.zip
-unzip -q glfw-3.2.1.zip
-rm glfw-3.2.1.zip
+wget https://github.com/glfw/glfw/archive/3.1.1.zip
+unzip -q glfw-3.1.1.zip
+rm glfw-3.1.1.zip
+
