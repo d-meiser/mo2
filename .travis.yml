@@ -1,43 +1,29 @@
 sudo: false
 language: cpp
-matrix:
- include:
-   - compiler: gcc
-     addons:
-       apt:
-         sources:
-           - ubuntu-toolchain-r-test
-         packages:
-           - g++-6
-     env: COMPILER=g++-6
-   - compiler: clang
-     addons:
-       apt:
-         sources:
-           - ubuntu-toolchain-r-test
-           - llvm-toolchain-precise-3.7
-         packages:
-           - clang-3.7
-     env: COMPILER=clang++-3.7
+compiler: gcc
 cache:
   apt: true
 addons:
   apt:
+    sources:
+      - kubuntu-backports
     packages:
-    - cmake
-    - lcov
-    - libjpeg-dev
-    - libxrandr-dev
-    - libxinerama-dev
-    - libxcursor-dev
-    - xorg-dev
-    - libglu1-mesa-dev
-    - libXxf86vm-dev
+      - cmake
+      - lcov
+      - libjpeg-dev
+      - libxrandr-dev
+      - libxinerama-dev
+      - libxcursor-dev
+      - xorg-dev
+      - libglu1-mesa-dev
+      - libXxf86vm-dev
 before_install:
   - gem install coveralls-lcov
   - sh ./utilities/download_gtest.sh
   - sh ./utilities/download_glfw.sh
 script:
+  - cmake --version
+  - $(CC) --version
   - mkdir -p build
   - cd build
   - cmake -DCMAKE_BUILD_TYPE=Debug -DMO_ENABLE_COVERAGE=ON -DMO_BUILD_TESTS=ON -DBUILD_GTEST=ON -DBUILD_GMOCK=OFF -Dgtest_disable_pthreads=ON -Dgtest_hide_internal_symbols=ON -DCMAKE_CXX_COMPILER=${COMPILER} -DBUILD_SHARED_LIBS=ONn -DMO_WITH_ADDRESS_SANITIZER=ON -DMO_WITH_WALL_FLAGS=ON -DMO_WITH_PEDANTIC_FLAGS=ON -DMO_WITH_WARNING_AS_ERRORS=ON ..
