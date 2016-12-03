@@ -5,7 +5,7 @@
 TEST(glfw, CanCreateOffscreenContext) {
   GLFWwindow* window;
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
   glfwWindowHint(GLFW_VISIBLE, false);
   window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
   EXPECT_NE(nullptr, window);
