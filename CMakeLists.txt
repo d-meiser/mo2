@@ -59,6 +59,8 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
+add_subdirectory(glfw-3.2.1)
+
 add_subdirectory(src)
 if (MO_BUILD_TESTS)
   add_subdirectory(googletest-release-1.8.0)
