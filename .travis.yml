@@ -1,6 +1,6 @@
 sudo: false
 language: cpp
-compiler: gcc
+compiler: clang
 cache:
   apt: true
 addons:
