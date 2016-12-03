@@ -1,9 +1,6 @@
 sudo: false
 language: cpp
 compiler: clang
-env:
-  - MO_WITH_ADDRESS_SANITIZER=OFF
-  - MO_WITH_ADDRESS_SANITIZER=ON
 cache:
   apt: true
 addons:
