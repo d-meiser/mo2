@@ -4,6 +4,7 @@
 #include <targetimage.h>
 #include <tile.h>
 #include <potential.h>
+#include <utilities.h>
 
 #include <memory>
 #include <cmath>
@@ -17,12 +18,11 @@ TEST(InteractionTileTile, Constructor) {
     EXPECT_NO_THROW(interaction.reset(new InteractionTileTile(nullptr)));
 }
 
-#if 0
 
-class IdentityPotential : public MoPotential {
+class IdentityPotential : public Potential {
     virtual float operator()(const float* x1, const float* x2) {
-        Q_UNUSED(x1);
-        Q_UNUSED(x2);
+        MO_UNUSED(x1);
+        MO_UNUSED(x2);
         return 1.0f;
     }
     virtual float range() const {
@@ -33,45 +33,48 @@ class IdentityPotential : public MoPotential {
 
 struct InteractionTileTileIdentity : public ::testing::Test {
     InteractionTileTileIdentity() :
-        interaction(std::unique_ptr<MoPotential>(new IdentityPotential())),
-        model(),
-        targetImage(QImage(), QSize(150, 100))
+        interaction(std::unique_ptr<Potential>(new IdentityPotential())),
+        mosaic(Image(150, 100), 1.4f),
+        targetImage(mosaic.targetImage())
     {}
     virtual void SetUp() {
         createSomeModel(2);
     }
     virtual void TearDown() {}
     void createSomeModel(int numTiles) {
-        std::vector<MoTile> tiles(numTiles,
-            MoTile(QImage(20, 30, QImage::Format_RGBA8888)));
-        model.constructInitialState(targetImage, tiles);
-        std::vector<float> x(numTiles);
-        model.setXCoords(&x[0], &x[0] + numTiles);
-        std::vector<float> y(numTiles);
-        model.setXCoords(&y[0], &y[0] + numTiles);
-        std::vector<float> rotations(numTiles, 0.0f);
-        model.setRotations(&rotations[0], &rotations[0] + numTiles);
-        std::vector<float> scales(numTiles, 0.0f);
-        model.setRotations(&scales[0], &scales[0] + numTiles);
+        std::vector<Tile> tiles;
+        for (int i = 0; i != numTiles; ++i) {
+          tiles.emplace_back(
+              Tile{0, 0, 0, 1.0f, std::unique_ptr<Image>(new Image(30, 20))});
+        }
+        mosaic.addTiles(&tiles[0], &tiles[0] + tiles.size());
     }
     InteractionTileTile interaction;
-    MoMosaicModel model;
-    MoTargetImage targetImage;
+    Mosaic mosaic;
+    TargetImage targetImage;
 };
 
 
 TEST_F(InteractionTileTileIdentity, CanComputeBadness) {
-    EXPECT_NO_THROW(interaction.computeBadness(model, targetImage));
+    EXPECT_NO_THROW(interaction.computeBadness(mosaic, targetImage));
 }
 
 TEST_F(InteractionTileTileIdentity, UnitScaleTilesGiveBadnessOfOne) {
-    EXPECT_NEAR(1.0f, interaction.computeBadness(model, targetImage), 1.0e-5f);
+    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
 }
 
 TEST_F(InteractionTileTileIdentity, ThreeTilesGiveThreeTimesAsMuchBadness) {
     int numTiles = 3;
+    mosaic.clear();
     createSomeModel(numTiles);
-    EXPECT_NEAR(3.0f, interaction.computeBadness(model, targetImage), 1.0e-5f);
+    EXPECT_NEAR(3.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
+}
+
+TEST_F(InteractionTileTileIdentity, FourTilesGiveSixTimesAsMuchBadness) {
+    int numTiles = 4;
+    mosaic.clear();
+    createSomeModel(numTiles);
+    EXPECT_NEAR(6.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
 }
 
 class IdentityPotentialFiniteRange : public IdentityPotential {
@@ -86,59 +89,66 @@ public:
 TEST_F(InteractionTileTileIdentity, FiniteRangeInRange) {
     float range = 100.0f;
     interaction.resetPotential(
-                std::unique_ptr<MoPotential>(
+                std::unique_ptr<Potential>(
                     new IdentityPotentialFiniteRange(range)));
-    model.getXCoords()[0] = 0.0f;
-    model.getXCoords()[1] = 0.2f;
-    model.getYCoords()[0] = 0.0f;
-    model.getYCoords()[1] = 0.2f;
-    EXPECT_NEAR(1.0f, interaction.computeBadness(model, targetImage), 1.0e-5f);
+    auto tile = mosaic.tilesBegin();
+    tile->x_ = 0.0f;
+    tile->y_ = 0.2f;
+    ++tile;
+    tile->x_ = 0.0f;
+    tile->y_ = 0.2f;
+    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
 }
 
 TEST_F(InteractionTileTileIdentity, FiniteRangeMarginal) {
     float range = 100.0f;
     interaction.resetPotential(
-                std::unique_ptr<MoPotential>(
+                std::unique_ptr<Potential>(
                     new IdentityPotentialFiniteRange(range)));
-    std::vector<float> w(model.size());
-    model.getWidths(&w[0]);
-    std::vector<float> h(model.size());
-    model.getHeights(&h[0]);
-    float radius1 = std::sqrt(w[0] * w[0] + h[0] * h[0]);
-    float radius2 = std::sqrt(w[1] * w[1] + h[1] * h[1]);
+
+    auto tile = mosaic.tilesBegin();
+    float radius1 = std::sqrt(tile->width() * tile->width() +
+        tile->height() * tile->height());
+    ++tile;
+    float radius2 = std::sqrt(tile->width() * tile->width() +
+        tile->height() * tile->height());
 
     float distance = range + radius1 + radius2 - 1.0f;
 
     float alpha = 1.0f;
-    model.getXCoords()[0] = 0.0f;
-    model.getXCoords()[1] = cos(alpha) * distance;
-    model.getYCoords()[0] = 0.0f;
-    model.getYCoords()[1] = -sin(alpha) * distance;
+    tile = mosaic.tilesBegin();
+    tile->x_ = 0.0f;
+    tile->y_ = 0.0f;
+    ++tile;
+    tile->x_ = cos(alpha) * distance;
+    tile->y_ = -sin(alpha) * distance;
 
-    EXPECT_NEAR(1.0f, interaction.computeBadness(model, targetImage), 1.0e-5f);
+    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
 }
 
 TEST_F(InteractionTileTileIdentity, FiniteRangeOutOfRange) {
     float range = 100.0f;
     interaction.resetPotential(
-                std::unique_ptr<MoPotential>(
+                std::unique_ptr<Potential>(
                     new IdentityPotentialFiniteRange(range)));
-    std::vector<float> w(model.size());
-    model.getWidths(&w[0]);
-    std::vector<float> h(model.size());
-    model.getHeights(&h[0]);
-    float radius1 = std::sqrt(w[0] * w[0] + h[0] * h[0]);
-    float radius2 = std::sqrt(w[1] * w[1] + h[1] * h[1]);
+
+    auto tile = mosaic.tilesBegin();
+    float radius1 = std::sqrt(tile->width() * tile->width() +
+        tile->height() * tile->height());
+    ++tile;
+    float radius2 = std::sqrt(tile->width() * tile->width() +
+        tile->height() * tile->height());
 
     float distance = range + radius1 + radius2 + 1.0f;
 
     float alpha = 1.0f;
-    model.getXCoords()[0] = 0.0f;
-    model.getXCoords()[1] = cos(alpha) * distance;
-    model.getYCoords()[0] = 0.0f;
-    model.getYCoords()[1] = -sin(alpha) * distance;
+    tile = mosaic.tilesBegin();
+    tile->x_ = 0.0f;
+    tile->y_ = 0.0f;
+    ++tile;
+    tile->x_ = cos(alpha) * distance;
+    tile->y_ = -sin(alpha) * distance;
 
-    EXPECT_FLOAT_EQ(0.0f, interaction.computeBadness(model, targetImage));
+    EXPECT_NEAR(0.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
 }
 
-#endif

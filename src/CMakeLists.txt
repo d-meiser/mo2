@@ -14,6 +14,7 @@ add_library(mo_lib
     interactiontiletile.cpp
     mosaic.cpp
     run_configuration.cpp
+    tile.cpp
     )
 target_link_libraries(mo_lib
     ${JPEG_LIBRARIES}

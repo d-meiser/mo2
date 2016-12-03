@@ -19,7 +19,7 @@ float InteractionTileTile::computeBadness(
   auto begin = model.cTilesBegin();
   auto end = model.cTilesEnd();
   for (auto t1 = begin; t1 != end; ++t1) {
-    for (auto t2 = begin; t2 != end; ++t2) {
+    for (auto t2 = begin; t2 != t1; ++t2) {
       badness += computeBadnessPair(
           t1->x_, t1->y_, t1->image_->width(), t1->image_->height(),
           t1->angle_, t1->scale_,

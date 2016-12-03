@@ -1,6 +1,9 @@
 #ifndef TARGET_IMAGE_H
 #define TARGET_IMAGE_H
 
+#include <image.h>
+
+
 namespace Mo {
 
 class TargetImage {

@@ -11,6 +11,7 @@ int main(int argn, const char *argv[]) {
 
   Mosaic mosaic{
       *config.targetImageName(),
+      1.0f,
       config.tileBegin(),
       config.tileEnd()};
 

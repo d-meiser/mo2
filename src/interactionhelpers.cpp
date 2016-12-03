@@ -19,8 +19,8 @@ float computeBadnessPair(
     float distanceBetweenTileCenters = std::sqrt(
         (x0 - x1) * (x0 - x1) +
         (y0 - y1) * (y0 - y1));
-    float radius0 = std::sqrt(w0 * w0 + h0 * h0);
-    float radius1 = std::sqrt(w1 * w1 + h1 * h1);
+    float radius0 = scale0 * std::sqrt(w0 * w0 + h0 * h0);
+    float radius1 = scale1 * std::sqrt(w1 * w1 + h1 * h1);
     float distanceBetweenTiles =
       distanceBetweenTileCenters - radius0 - radius1;
     if (distanceBetweenTiles > range) {

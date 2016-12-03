@@ -6,6 +6,6 @@ using Mo::Testing::testFile;
 
 
 TEST(Mosaic, ConstructorTest) {
-  Mo::Mosaic mosaic(testFile("test_image_1.jpg"), nullptr, nullptr);
+  Mo::Mosaic mosaic(testFile("test_image_1.jpg"), 2.0f, nullptr, nullptr);
 }
 
