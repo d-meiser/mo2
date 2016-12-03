@@ -24,6 +24,9 @@ before_install:
   - gem install coveralls-lcov
   - sh ./utilities/download_gtest.sh
   - sh ./utilities/download_glfw.sh
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
 script:
   - cmake --version
   - mkdir -p build
