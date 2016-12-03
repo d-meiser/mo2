@@ -20,38 +20,38 @@ TEST(InteractionTileTile, Constructor) {
 
 
 class IdentityPotential : public Potential {
-    virtual float operator()(const float* x1, const float* x2) {
-        MO_UNUSED(x1);
-        MO_UNUSED(x2);
-        return 1.0f;
-    }
-    virtual float range() const {
-        return -1.0f;
-    }
+  virtual float operator()(const float* x1, const float* x2) {
+    MO_UNUSED(x1);
+    MO_UNUSED(x2);
+    return 1.0f;
+  }
+  virtual float range() const {
+    return -1.0f;
+  }
 };
 
 
 struct InteractionTileTileIdentity : public ::testing::Test {
-    InteractionTileTileIdentity() :
-        interaction(std::unique_ptr<Potential>(new IdentityPotential())),
-        mosaic(Image(150, 100), 1.4f),
-        targetImage(mosaic.targetImage())
-    {}
-    virtual void SetUp() {
-        createSomeModel(2);
+  InteractionTileTileIdentity() :
+    interaction(std::unique_ptr<Potential>(new IdentityPotential())),
+    mosaic(Image(150, 100), 1.4f),
+    targetImage(mosaic.targetImage())
+  {}
+  virtual void SetUp() {
+    createSomeModel(2);
+  }
+  virtual void TearDown() {}
+  void createSomeModel(int numTiles) {
+    std::vector<Tile> tiles;
+    for (int i = 0; i != numTiles; ++i) {
+      tiles.emplace_back(
+          Tile{0, 0, 0, 1.0f, std::unique_ptr<Image>(new Image(30, 20))});
     }
-    virtual void TearDown() {}
-    void createSomeModel(int numTiles) {
-        std::vector<Tile> tiles;
-        for (int i = 0; i != numTiles; ++i) {
-          tiles.emplace_back(
-              Tile{0, 0, 0, 1.0f, std::unique_ptr<Image>(new Image(30, 20))});
-        }
-        mosaic.addTiles(&tiles[0], &tiles[0] + tiles.size());
-    }
-    InteractionTileTile interaction;
-    Mosaic mosaic;
-    TargetImage targetImage;
+    mosaic.addTiles(&tiles[0], &tiles[0] + tiles.size());
+  }
+  InteractionTileTile interaction;
+  Mosaic mosaic;
+  TargetImage targetImage;
 };
 
 

@@ -83,4 +83,11 @@ void Mosaic::clear() {
   tiles_.clear();
 }
 
+void Mosaic::reduceSize(size_t newSize) {
+  if (newSize > tiles_.size()) {
+    throw std::runtime_error("newSize larger than current size.");
+  }
+  tiles_.resize(newSize);
+}
+
 }

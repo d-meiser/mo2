@@ -27,6 +27,7 @@ public:
   const TargetImage& targetImage() const;
   void addTiles(const Tile* tileBegin, const Tile* tileEnd);
   void clear();
+  void reduceSize(size_t newSize);
 
 private:
   TargetImage targetImage_;
