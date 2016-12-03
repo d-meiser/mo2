@@ -32,6 +32,7 @@ addons:
     - libxcursor-dev
     - xorg-dev
     - libglu1-mesa-dev
+    - x11proto-xf86vidmode-dev
 before_install:
   - gem install coveralls-lcov
   - sh ./utilities/download_gtest.sh
