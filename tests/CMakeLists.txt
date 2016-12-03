@@ -21,10 +21,13 @@ set(TESTS
     run_configuration_test
     tile_test
    )
+if (NOT MO_WITH_ADDRESS_SANITIZER)
+  list(APPEND TESTS glfw_test)
+endif ()
 
 foreach(t ${TESTS})
   add_executable(${t} ${t}.cpp)
-  target_link_libraries(${t} mo_lib test_utilities gtest_main)
+  target_link_libraries(${t} mo_lib test_utilities glfw gtest_main)
   add_test(${t} ${t})
 endforeach()
 
