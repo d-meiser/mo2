@@ -30,7 +30,8 @@ addons:
     - libxrandr-dev
     - libxinerama-dev
     - libxcursor-dev
-
+    - xorg-dev
+    - libglu1-mesa-dev
 before_install:
   - gem install coveralls-lcov
   - sh ./utilities/download_gtest.sh
