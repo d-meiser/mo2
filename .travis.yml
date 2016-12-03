@@ -27,6 +27,9 @@ addons:
     - cmake
     - lcov
     - libjpeg-dev
+    - libxrandr-dev
+    - libxinerama-dev
+    - libxcursor-dev
 
 before_install:
   - gem install coveralls-lcov
