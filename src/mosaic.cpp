@@ -1,6 +1,7 @@
 #include <mosaic.h>
 #include <algorithm>
 #include <cmath>
+#include <stdexcept>
 
 
 namespace Mo {

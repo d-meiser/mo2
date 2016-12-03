@@ -16,6 +16,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 option(MO_BUILD_TESTS "Whether to build tests" OFF)
 option(MO_ENABLE_COVERAGE "Instrument tests for coverage" OFF)
+option(MO_ENABLE_OPENGL_TESTS "Whether to run tests requiring OpenGL" ON)
 option(MO_WITH_ADDRESS_SANITIZER "Whether to build with address sanitizer enabled" OFF)
 option(MO_WITH_WALL_FLAGS "Whether to compile with all warning flags." ON)
 option(MO_WITH_PEDANTIC_FLAGS "Whether to compile with pedantic flags." OFF)
@@ -58,6 +59,8 @@ if (CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
   add_definitions(-D_SCL_SECURE_NO_WARNINGS -D_CRT_SECURE_NO_WARNINGS)
 endif ()
+
+add_subdirectory(glfw-3.2.1)
 
 add_subdirectory(src)
 if (MO_BUILD_TESTS)
