@@ -4,6 +4,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${gtest_SOURCE_DIR}/include
+    ${GLFW_SOURCE_DIR}/include
     )
 
 add_library(test_utilities
@@ -25,16 +26,23 @@ set(TESTS
 foreach(t ${TESTS})
   add_executable(${t} ${t}.cpp)
   target_link_libraries(${t} mo_lib test_utilities gtest_main)
+  if(UNIX)
+    target_link_libraries(${t} dl)
+  endif()
   add_test(${t} ${t})
 endforeach()
 
 set(OPENGL_TESTS
     glfw_test
     gl3w_test
+    framebuffer_test
     )
 foreach(t ${OPENGL_TESTS})
   add_executable(${t} ${t}.cpp)
   target_link_libraries(${t} mo_lib test_utilities glfw gtest_main)
+  if(UNIX)
+    target_link_libraries(${t} dl)
+  endif()
 endforeach()
 if (MO_ENABLE_OPENGL_TESTS AND NOT MO_WITH_ADDRESS_SANITIZER)
   foreach(t ${OPENGL_TESTS})
