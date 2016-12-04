@@ -24,6 +24,10 @@ target_link_libraries(mo_lib
 
 add_executable(mo2 mo2.cpp)
 target_link_libraries(mo2 mo_lib)
+if(UNIX)
+  target_link_libraries(mo2 dl)
+endif()
+
 add_test(mo2 mo2
     -t ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
     ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg

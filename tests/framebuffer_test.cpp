@@ -6,6 +6,10 @@ TEST(framebuffer, IncludeTest) {
   EXPECT_TRUE(true);
 }
 
+TEST(framebuffer, CanCreateFramebuffer) {
+  Mo::Framebuffer fb(640, 480);
+}
+
 
 int main(int argn, char* argv[]) {
   ::testing::InitGoogleTest(&argn, argv);
