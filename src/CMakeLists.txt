@@ -2,7 +2,7 @@ INCLUDE_DIRECTORIES(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${glfw_INCLUDE_DIRS}
+    ${GLFW_SOURCE_DIR}/include
     )
 
 find_package(JPEG)
