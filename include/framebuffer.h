@@ -12,11 +12,16 @@ class MO_LIB_EXPORT Framebuffer {
 public:
   Framebuffer(int width, int height);
   ~Framebuffer();
+  void bind();
+  size_t size() const;
+  void getPixels(unsigned char* data);
 
 private:
   GLuint fbo_;
   GLuint colorTexture_;
-  GLuint depthStencilTexture_;
+  GLuint depthTexture_;
+  int width_;
+  int height_;
 };
 
 }
