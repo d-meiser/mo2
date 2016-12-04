@@ -12,6 +12,7 @@ add_library(mo_lib
     interactionhelpers.cpp
     interactiontileborder.cpp
     interactiontiletile.cpp
+    gl3w.c
     mosaic.cpp
     run_configuration.cpp
     tile.cpp

@@ -30,6 +30,7 @@ endforeach()
 
 set(OPENGL_TESTS
     glfw_test
+    gl3w_test
     )
 foreach(t ${OPENGL_TESTS})
   add_executable(${t} ${t}.cpp)
