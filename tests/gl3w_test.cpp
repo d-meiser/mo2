@@ -59,6 +59,7 @@ static void reshape(GLFWwindow *, int w, int h)
 int main(int, char **)
 {
   GLFWwindow * window;
+  int i;
 
   glfwInit();
 
@@ -83,10 +84,10 @@ int main(int, char **)
   printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
       glGetString(GL_SHADING_LANGUAGE_VERSION));
 
-  do {
+  for (i = 0; i < 10; ++i) {
     display(window);
     glfwPollEvents();
-  } while(!glfwWindowShouldClose(window));
+  }
 
   glfwTerminate();
   return 0;
