@@ -11,14 +11,18 @@ namespace Mo {
 class MO_LIB_EXPORT Renderer {
 public:
   Renderer();
+  Renderer(const Renderer&) = delete;
+  const Renderer& operator=(const Renderer&) = delete;
   virtual ~Renderer();
 
   void render();
 
 private:
-  std::unique_ptr<int> shaderProgram_;
-  virtual std::string vertexShaderSource() = 0;
-  virtual std::string fragmentShaderSource() = 0;
+  int shaderProgram_;
+  virtual const char* vertexShaderSource() = 0;
+  virtual const char* fragmentShaderSource() = 0;
+
+  void createShaderProgram();
 };
 
 }

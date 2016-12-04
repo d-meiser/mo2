@@ -8,11 +8,27 @@ TEST(renderer, IncludeTest) { }
 
 class PassThroughRenderer : public Mo::Renderer {
 private:
-  std::string vertexShaderSource() override {
-    return "";
+  const char* vertexShaderSource() override {
+    return
+    "#version 150\n"
+    "\n"
+    "void main(void)\n"
+    "{\n"
+    "  gl_Position = vec4(0.0, 0.0, 0.5, 1.0);\n"
+    "}\n"
+    ;
   }
-  std::string fragmentShaderSource() override {
-    return "";
+  const char* fragmentShaderSource() override {
+    return
+    "#version 150\n"
+    "\n"
+    "out vec4 color;\n"
+    "\n"
+    "void main(void)\n"
+    "{\n"
+    "  color = vec4(0.0, 0.8, 1.0, 1.0);\n"
+    "}\n"
+    ;
   }
 };
 
@@ -20,6 +36,10 @@ TEST(renderer, CanConstruct) {
   PassThroughRenderer renderer;
 }
 
+TEST(renderer, CanRender) {
+  PassThroughRenderer renderer;
+  renderer.render();
+}
 
 int main(int argn, char* argv[]) {
   ::testing::InitGoogleTest(&argn, argv);
@@ -29,7 +49,6 @@ int main(int argn, char* argv[]) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_VISIBLE, false);
   window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
   glfwMakeContextCurrent(window);
 
