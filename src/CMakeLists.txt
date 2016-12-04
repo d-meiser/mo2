@@ -8,6 +8,7 @@ find_package(JPEG)
 
 add_library(mo_lib
     badnesscomposite.cpp
+    framebuffer.cpp
     image.cpp
     interactionhelpers.cpp
     interactiontileborder.cpp
