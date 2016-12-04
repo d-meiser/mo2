@@ -4,6 +4,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${gtest_SOURCE_DIR}/include
+    ${glfw_INCLUDE_DIRS}
     )
 
 add_library(test_utilities
