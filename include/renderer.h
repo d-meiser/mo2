@@ -21,6 +21,8 @@ private:
   int shaderProgram_;
   virtual const char* vertexShaderSource() = 0;
   virtual const char* fragmentShaderSource() = 0;
+  virtual void bindVAO() = 0;
+  virtual void draw() = 0;
 
   void createShaderProgram();
 };
