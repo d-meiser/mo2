@@ -10,8 +10,8 @@ namespace Mo {
 class Mosaic;
 
 class MO_LIB_EXPORT MosaicRenderer : public Renderer {
-private:
-  virtual void setMosaic(Mosaic* mosaic);
+public:
+  virtual void setMosaic(Mosaic* mosaic) = 0;
 };
 
 }

@@ -37,6 +37,7 @@ set(OPENGL_TESTS
     gl3w_test
     framebuffer_test
     mosaicrenderer_test
+    mosaicrendereroutline_test
     renderer_test
     )
 foreach(t ${OPENGL_TESTS})

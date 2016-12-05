@@ -16,6 +16,7 @@ add_library(mo_lib
     interactiontiletile.cpp
     gl3w.c
     mosaic.cpp
+    mosaic_renderer_outline.cpp
     renderer.cpp
     run_configuration.cpp
     tile.cpp
