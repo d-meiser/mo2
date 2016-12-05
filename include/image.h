@@ -19,14 +19,16 @@ public:
   Image(int width, int height);
   ~Image();
   void save(const std::string& filename);
-  char *getPixelData();
-  const char *getConstPixelData() const;
+  unsigned char *getPixelData();
+  const unsigned char *getConstPixelData() const;
   int width() const;
   int height() const;
   int pitch() const;
   int numComponents() const;
   void setQuality(int quality);
   int quality() const;
+
+  bool operator==(const Image& rhs) const;
 
 private:
   int width_;

@@ -23,6 +23,22 @@ void Image::save(const std::string& filename) {
   saveJpegFile(filename.c_str());
 }
 
+unsigned char *Image::getPixelData() {
+  if (pixelData_.empty()) {
+    return nullptr;
+  } else {
+    return &pixelData_[0];
+  }
+}
+
+const unsigned char *Image::getConstPixelData() const {
+  if (pixelData_.empty()) {
+    return nullptr;
+  } else {
+    return &pixelData_[0];
+  }
+}
+
 int Image::width() const {
   return width_;
 }
@@ -45,6 +61,32 @@ void Image::setQuality(int quality) {
 
 int Image::quality() const {
   return quality_;
+}
+
+bool Image::operator==(const Image& rhs) const {
+  if (numComponents_ != rhs.numComponents_) {
+    return false;
+  }
+  if (width_ != rhs.width_) {
+    return false;
+  }
+  if (height_ != rhs.height_) {
+    return false;
+  }
+  double l1Difference = 0;
+  for (int i = 0; i != height_; ++i) {
+    for (int j = 0; j != width_; ++j) {
+      for (int k = 0; k < numComponents_; ++k) {
+        int difference =
+          (int)pixelData_[(i * width_ + j) * numComponents_ + k] - 
+          (int)rhs.pixelData_[(i * width_ + j) * numComponents_ + k];
+        l1Difference += std::abs(difference);
+      }
+    }
+  }
+  double meanError = l1Difference / (255 * numComponents_ * width_ * height_);
+  static const double tolerance = 1.0e-2;
+  return meanError < tolerance ;
 }
 
 void Image::readJpegFile(const char *filename) {
@@ -71,13 +113,13 @@ void Image::readJpegFile(const char *filename) {
   numComponents_ = cinfo.num_components;
 
   pixelData_.resize(cinfo.output_width *
-                    cinfo.output_height * cinfo.num_components);
+      cinfo.output_height * cinfo.num_components);
   row_pointer[0] = (unsigned char *)malloc(
       cinfo.output_width * cinfo.num_components);
   while (cinfo.output_scanline < cinfo.image_height) {
     jpeg_read_scanlines(&cinfo, row_pointer, 1);
     for (unsigned int i = 0;
-         i < cinfo.image_width * cinfo.num_components; ++i) {
+        i < cinfo.image_width * cinfo.num_components; ++i) {
       pixelData_[location++] = row_pointer[0][i];
     }
   }
@@ -112,7 +154,7 @@ void Image::saveJpegFile(const char *filename) {
   jpeg_start_compress( &cinfo, TRUE );
   while (cinfo.next_scanline < cinfo.image_height) {
     row_pointer[0] = &pixelData_[cinfo.next_scanline *
-                                 cinfo.image_width * cinfo.input_components];
+      cinfo.image_width * cinfo.input_components];
     jpeg_write_scanlines(&cinfo, row_pointer, 1);
   }
   jpeg_finish_compress(&cinfo);

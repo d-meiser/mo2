@@ -36,6 +36,7 @@ set(OPENGL_TESTS
     glfw_test
     gl3w_test
     framebuffer_test
+    renderer_test
     )
 foreach(t ${OPENGL_TESTS})
   add_executable(${t} ${t}.cpp)
@@ -52,6 +53,7 @@ endif ()
 
 set(TEST_FILES
     test_files/test_image_1.jpg
+    test_files/passThroughRenderer_master.jpg
     )
 foreach(f ${TEST_FILES})
     file(COPY ${f} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test_files)
