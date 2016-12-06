@@ -3,18 +3,23 @@
 
 #include <mo_lib_export.h>
 #include <mosaic_renderer.h>
+#include <GL/gl3w.h>
 
 
 namespace Mo {
 
 class MO_LIB_EXPORT MosaicRendererOutline : public MosaicRenderer {
 public:
+  MosaicRendererOutline();
   ~MosaicRendererOutline();
+  void setMosaic(Mosaic* mosaic) override;
 
 private:
-  Mosaic* mosaic_;
+  int size_;
+  GLuint vbo_;
+  GLuint vao_;
+  GLuint tileTextures_;
 
-  void setMosaic(Mosaic* mosaic) override;
   const char* vertexShaderSource() override;
   const char* fragmentShaderSource() override;
   void bindVAO() override;
