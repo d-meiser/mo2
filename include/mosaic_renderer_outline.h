@@ -4,6 +4,7 @@
 #include <mo_lib_export.h>
 #include <mosaic_renderer.h>
 #include <GL/gl3w.h>
+#include <vector>
 
 
 namespace Mo {
@@ -16,9 +17,17 @@ public:
 
 private:
   int bufferSize_;
-  const Mosaic* mosaic_;
   GLuint vbo_;
   GLuint vao_;
+
+  struct MyTile {
+    float x_;
+    float y_;
+    float angle_;
+    float width_;
+    float height_;
+  };
+  std::vector<MyTile> tiles_;
 
   // UniformLocations
   float viewPortWidth_;

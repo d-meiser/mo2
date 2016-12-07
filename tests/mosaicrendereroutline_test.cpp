@@ -49,9 +49,17 @@ TEST_F(MosaicRendererOutline, ConstructorTest) {
 TEST_F(MosaicRendererOutline, CanRender) {
   Mo::MosaicRendererOutline renderer;
   renderer.setMosaic(&mosaic);
+
+  float red = 0.1f;
+  float green = 0.2f;
+  float blue = 1.0f;
+  glClearColor(red, green, blue, 1.0);
+  glClearDepth(1.0f);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   int width;
   int height;
-  for (int i = 0; i < 2; ++i) {
+  for (int i = 0; ; ++i) {
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
     renderer.render();
@@ -74,7 +82,7 @@ int main(int argn, char* argv[]) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_VISIBLE, false);
+  //glfwWindowHint(GLFW_VISIBLE, false);
   window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
   glfwMakeContextCurrent(window);
 

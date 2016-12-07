@@ -3,6 +3,7 @@
 #include <utilities.h>
 #include <mosaic.h>
 #include <GLFW/glfw3.h>
+#include <algorithm>
 
 
 namespace Mo {
@@ -53,7 +54,6 @@ static const char fShaderSource[] =
 
 MosaicRendererOutline::MosaicRendererOutline() :
     bufferSize_(0),
-    mosaic_(nullptr),
     vbo_(0),
     vao_(0),
     viewPortWidth_(-1.0f),
@@ -68,7 +68,12 @@ MosaicRendererOutline::~MosaicRendererOutline() {
 }
 
 void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
-  mosaic_ = mosaic;
+  tiles_.resize(mosaic->size());
+  std::transform(mosaic->cTilesBegin(), mosaic->cTilesEnd(),
+      tiles_.begin(),
+      [](const Tile& t) {
+        return MyTile{t.x_, t.y_, t.angle_, t.width(), t.height()};
+      });
 }
 
 const char* MosaicRendererOutline::vertexShaderSource() {
@@ -103,12 +108,13 @@ void MosaicRendererOutline::draw() {
   int height;
   GLFWwindow* window = glfwGetCurrentContext();
   glfwGetFramebufferSize(window, &width, &height);
-  glUniform1f(viewPortWidth_, width);
-  glUniform1f(viewPortHeight_, height);
+  glUniform1f(viewPortWidth_, static_cast<float>(width));
+  glUniform1f(viewPortHeight_, static_cast<float>(height));
   glUniform1f(magnification_, 1.0f);
-  glUniform1f(numTiles_, mosaic_->size());
+  glUniform1f(numTiles_, static_cast<float>(tiles_.size()));
+  MO_CHECK_GL_ERROR;
 
-  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, mosaic_->size());
+  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, tiles_.size());
   MO_CHECK_GL_ERROR;
 }
 
@@ -127,30 +133,35 @@ void MosaicRendererOutline::setupVAO() {
     GLint program;
     glGetIntegerv(GL_CURRENT_PROGRAM, &program);
 
+    glEnableVertexAttribArray(glGetAttribLocation(program, "x"));
     glVertexAttribPointer(glGetAttribLocation(program, "x"),
-        1, GL_FLOAT, false, sizeof(Tile),
+        1, GL_FLOAT, false, sizeof(MyTile),
         reinterpret_cast<void*>(0 * sizeof(float)));
+
+    glEnableVertexAttribArray(glGetAttribLocation(program, "y"));
     glVertexAttribPointer(glGetAttribLocation(program, "y"),
-        1, GL_FLOAT, false, sizeof(Tile),
+        1, GL_FLOAT, false, sizeof(MyTile),
         reinterpret_cast<void*>(1 * sizeof(float)));
+    glEnableVertexAttribArray(glGetAttribLocation(program, "width"));
     glVertexAttribPointer(glGetAttribLocation(program, "width"),
-        1, GL_FLOAT, false, sizeof(Tile),
+        1, GL_FLOAT, false, sizeof(MyTile),
         reinterpret_cast<void*>(2 * sizeof(float)));
+    glEnableVertexAttribArray(glGetAttribLocation(program, "height"));
     glVertexAttribPointer(glGetAttribLocation(program, "height"),
-        1, GL_FLOAT, false, sizeof(Tile),
+        1, GL_FLOAT, false, sizeof(MyTile),
         reinterpret_cast<void*>(3 * sizeof(float)));
+    glEnableVertexAttribArray(glGetAttribLocation(program, "rotation"));
     glVertexAttribPointer(glGetAttribLocation(program, "rotation"),
-        1, GL_FLOAT, false, sizeof(Tile),
+        1, GL_FLOAT, false, sizeof(MyTile),
         reinterpret_cast<void*>(3 * sizeof(float)));
     MO_CHECK_GL_ERROR;
   }
 
-  int mosaicSize = mosaic_->size() * sizeof(Mo::Tile);
-  if (bufferSize_ != mosaicSize) {
+  int mosaicSize = tiles_.size() * sizeof(MyTile);
+  if (bufferSize_ != mosaicSize && !tiles_.empty()) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
     MO_CHECK_GL_ERROR;
-    auto t = mosaic_->cTilesBegin();
-    glBufferData(GL_ARRAY_BUFFER, mosaicSize, &*t, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mosaicSize, &tiles_[0], GL_STATIC_DRAW);
     MO_CHECK_GL_ERROR;
     bufferSize_ = mosaicSize;
   }
