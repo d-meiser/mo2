@@ -93,6 +93,9 @@ void MosaicRendererOutline::draw() {
   glCullFace(GL_FRONT);
   MO_CHECK_GL_ERROR;
 
+  const GLfloat color[] = {0.2f, 0.2f, 0.2f, 1.0f};
+  glClearBufferfv(GL_COLOR, 0, color);
+
   if (viewPortWidth_ < 0) {
     getUniformLocations();
   }
