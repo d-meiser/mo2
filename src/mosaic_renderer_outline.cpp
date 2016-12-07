@@ -9,11 +9,11 @@ namespace Mo {
 static const char vShaderSource[] =
     "#version 150\n"
     "\n"
-    "layout(location = 0) in float x;\n"
-    "layout(location = 1) in float y;\n"
-    "layout(location = 2) in float width;\n"
-    "layout(location = 3) in float height;\n"
-    "layout(location = 4) in float rotation;\n"
+    "in float x;\n"
+    "in float y;\n"
+    "in float width;\n"
+    "in float height;\n"
+    "in float rotation;\n"
     "\n"
     "uniform float viewPortWidth = 1.0f;\n"
     "uniform float viewPortHeight = 1.0f;\n"
@@ -69,11 +69,14 @@ MosaicRendererOutline::MosaicRendererOutline() {
       reinterpret_cast<void*>(2 * sizeof(float)));
   glVertexAttribPointer(3, 1, GL_FLOAT, false, sizeof(Tile),
       reinterpret_cast<void*>(3 * sizeof(float)));
+  glVertexAttribPointer(4, 1, GL_FLOAT, false, sizeof(Tile),
+      reinterpret_cast<void*>(3 * sizeof(float)));
   MO_CHECK_GL_ERROR;
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   MO_CHECK_GL_ERROR;
 
+#if 0
   glGenTextures(1, &tileTextures_);
   glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
   glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 512, 512, 100);
@@ -83,6 +86,7 @@ MosaicRendererOutline::MosaicRendererOutline() {
   glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   //glTexSubImage3D(GL_TEXTURE_2D_ARRAY, ...);
   MO_CHECK_GL_ERROR;
+#endif
 }
 
 MosaicRendererOutline::~MosaicRendererOutline() {
@@ -120,6 +124,13 @@ void MosaicRendererOutline::bindVAO() {
 
 void MosaicRendererOutline::draw() {
   MO_CHECK_GL_ERROR;
+  glEnable(GL_DEPTH_TEST);
+  glFrontFace(GL_CW);
+  glCullFace(GL_FRONT);
+  MO_CHECK_GL_ERROR;
+
+
+
   glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, size_);
   MO_CHECK_GL_ERROR;
 }

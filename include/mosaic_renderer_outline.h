@@ -18,7 +18,9 @@ private:
   int size_;
   GLuint vbo_;
   GLuint vao_;
+#if 0
   GLuint tileTextures_;
+#endif
 
   const char* vertexShaderSource() override;
   const char* fragmentShaderSource() override;
