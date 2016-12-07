@@ -19,6 +19,12 @@ private:
   const Mosaic* mosaic_;
   GLuint vbo_;
   GLuint vao_;
+
+  // UniformLocations
+  float viewPortWidth_;
+  float viewPortHeight_;
+  float magnification_;
+  float numTiles_;
 #if 0
   GLuint tileTextures_;
 #endif
@@ -29,6 +35,7 @@ private:
   void draw() override;
 
   void setupVAO();
+  void getUniformLocations();
 };
 
 }

@@ -23,6 +23,7 @@ add_library(mo_lib
     )
 target_link_libraries(mo_lib
     ${JPEG_LIBRARIES}
+    glfw
     )
 
 add_executable(mo2 mo2.cpp)

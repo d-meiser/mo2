@@ -2,6 +2,7 @@
 #include <tile.h>
 #include <utilities.h>
 #include <mosaic.h>
+#include <GLFW/glfw3.h>
 
 
 namespace Mo {
@@ -54,7 +55,11 @@ MosaicRendererOutline::MosaicRendererOutline() :
     bufferSize_(0),
     mosaic_(nullptr),
     vbo_(0),
-    vao_(0) {
+    vao_(0),
+    viewPortWidth_(-1.0f),
+    viewPortHeight_(-1.0f),
+    magnification_(-1.0f),
+    numTiles_(-1.0f) {
 }
 
 MosaicRendererOutline::~MosaicRendererOutline() {
@@ -88,6 +93,18 @@ void MosaicRendererOutline::draw() {
   glCullFace(GL_FRONT);
   MO_CHECK_GL_ERROR;
 
+  if (viewPortWidth_ < 0) {
+    getUniformLocations();
+  }
+  int width;
+  int height;
+  GLFWwindow* window = glfwGetCurrentContext();
+  glfwGetFramebufferSize(window, &width, &height);
+  glUniform1f(viewPortWidth_, width);
+  glUniform1f(viewPortHeight_, height);
+  glUniform1f(magnification_, 1.0f);
+  glUniform1f(numTiles_, mosaic_->size());
+
   glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, mosaic_->size());
   MO_CHECK_GL_ERROR;
 }
@@ -104,15 +121,23 @@ void MosaicRendererOutline::setupVAO() {
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
     MO_CHECK_GL_ERROR;
 
-    glVertexAttribPointer(0, 1, GL_FLOAT, false, sizeof(Tile),
+    GLint program;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+
+    glVertexAttribPointer(glGetAttribLocation(program, "x"),
+        1, GL_FLOAT, false, sizeof(Tile),
         reinterpret_cast<void*>(0 * sizeof(float)));
-    glVertexAttribPointer(1, 1, GL_FLOAT, false, sizeof(Tile),
+    glVertexAttribPointer(glGetAttribLocation(program, "y"),
+        1, GL_FLOAT, false, sizeof(Tile),
         reinterpret_cast<void*>(1 * sizeof(float)));
-    glVertexAttribPointer(2, 1, GL_FLOAT, false, sizeof(Tile),
+    glVertexAttribPointer(glGetAttribLocation(program, "width"),
+        1, GL_FLOAT, false, sizeof(Tile),
         reinterpret_cast<void*>(2 * sizeof(float)));
-    glVertexAttribPointer(3, 1, GL_FLOAT, false, sizeof(Tile),
+    glVertexAttribPointer(glGetAttribLocation(program, "height"),
+        1, GL_FLOAT, false, sizeof(Tile),
         reinterpret_cast<void*>(3 * sizeof(float)));
-    glVertexAttribPointer(4, 1, GL_FLOAT, false, sizeof(Tile),
+    glVertexAttribPointer(glGetAttribLocation(program, "rotation"),
+        1, GL_FLOAT, false, sizeof(Tile),
         reinterpret_cast<void*>(3 * sizeof(float)));
     MO_CHECK_GL_ERROR;
   }
@@ -139,6 +164,16 @@ void MosaicRendererOutline::setupVAO() {
   MO_CHECK_GL_ERROR;
 #endif
 }
+
+void MosaicRendererOutline::getUniformLocations() {
+  GLint program;
+  glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+  viewPortWidth_ = glGetUniformLocation(program, "viewPortWidth");
+  viewPortHeight_ = glGetUniformLocation(program, "viewPortHeight");
+  magnification_ = glGetUniformLocation(program, "magnification");
+  numTiles_ = glGetUniformLocation(program, "numTiles");
+  MO_CHECK_GL_ERROR;
+} 
 
 }
 
