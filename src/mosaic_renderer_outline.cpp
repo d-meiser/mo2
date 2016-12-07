@@ -50,43 +50,11 @@ static const char fShaderSource[] =
     "}\n"
     ;
 
-MosaicRendererOutline::MosaicRendererOutline() {
-  MO_CHECK_GL_ERROR;
-
-  glGenVertexArrays(1, &vao_);
-  glBindVertexArray(vao_);
-  MO_CHECK_GL_ERROR;
-
-  glGenBuffers(1, &vbo_);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-  MO_CHECK_GL_ERROR;
-
-  glVertexAttribPointer(0, 1, GL_FLOAT, false, sizeof(Tile),
-      reinterpret_cast<void*>(0 * sizeof(float)));
-  glVertexAttribPointer(1, 1, GL_FLOAT, false, sizeof(Tile),
-      reinterpret_cast<void*>(1 * sizeof(float)));
-  glVertexAttribPointer(2, 1, GL_FLOAT, false, sizeof(Tile),
-      reinterpret_cast<void*>(2 * sizeof(float)));
-  glVertexAttribPointer(3, 1, GL_FLOAT, false, sizeof(Tile),
-      reinterpret_cast<void*>(3 * sizeof(float)));
-  glVertexAttribPointer(4, 1, GL_FLOAT, false, sizeof(Tile),
-      reinterpret_cast<void*>(3 * sizeof(float)));
-  MO_CHECK_GL_ERROR;
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  MO_CHECK_GL_ERROR;
-
-#if 0
-  glGenTextures(1, &tileTextures_);
-  glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
-  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 512, 512, 100);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  //glTexSubImage3D(GL_TEXTURE_2D_ARRAY, ...);
-  MO_CHECK_GL_ERROR;
-#endif
+MosaicRendererOutline::MosaicRendererOutline() :
+    bufferSize_(0),
+    mosaic_(nullptr),
+    vbo_(0),
+    vao_(0) {
 }
 
 MosaicRendererOutline::~MosaicRendererOutline() {
@@ -95,17 +63,7 @@ MosaicRendererOutline::~MosaicRendererOutline() {
 }
 
 void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
-  size_ = mosaic->size();
-  if (0 == mosaic->size()) return;
-
-  MO_CHECK_GL_ERROR;
-  glBindBuffer(GL_ARRAY_BUFFER, vbo_);
-  MO_CHECK_GL_ERROR;
-  auto t = mosaic->cTilesBegin();
-  glBufferData(GL_ARRAY_BUFFER,
-       mosaic->size() * sizeof(&*t),
-       &*t,
-       GL_STATIC_DRAW);
+  mosaic_ = mosaic;
 }
 
 const char* MosaicRendererOutline::vertexShaderSource() {
@@ -118,6 +76,7 @@ const char* MosaicRendererOutline::fragmentShaderSource() {
 
 void MosaicRendererOutline::bindVAO() {
   MO_CHECK_GL_ERROR;
+  setupVAO();
   glBindVertexArray(vao_);
   MO_CHECK_GL_ERROR;
 }
@@ -129,10 +88,56 @@ void MosaicRendererOutline::draw() {
   glCullFace(GL_FRONT);
   MO_CHECK_GL_ERROR;
 
-
-
-  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, size_);
+  glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, mosaic_->size());
   MO_CHECK_GL_ERROR;
+}
+
+void MosaicRendererOutline::setupVAO() {
+  MO_CHECK_GL_ERROR;
+
+  if (!vao_) {
+    glGenVertexArrays(1, &vao_);
+    glBindVertexArray(vao_);
+    MO_CHECK_GL_ERROR;
+
+    glGenBuffers(1, &vbo_);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    MO_CHECK_GL_ERROR;
+
+    glVertexAttribPointer(0, 1, GL_FLOAT, false, sizeof(Tile),
+        reinterpret_cast<void*>(0 * sizeof(float)));
+    glVertexAttribPointer(1, 1, GL_FLOAT, false, sizeof(Tile),
+        reinterpret_cast<void*>(1 * sizeof(float)));
+    glVertexAttribPointer(2, 1, GL_FLOAT, false, sizeof(Tile),
+        reinterpret_cast<void*>(2 * sizeof(float)));
+    glVertexAttribPointer(3, 1, GL_FLOAT, false, sizeof(Tile),
+        reinterpret_cast<void*>(3 * sizeof(float)));
+    glVertexAttribPointer(4, 1, GL_FLOAT, false, sizeof(Tile),
+        reinterpret_cast<void*>(3 * sizeof(float)));
+    MO_CHECK_GL_ERROR;
+  }
+
+  int mosaicSize = mosaic_->size() * sizeof(Mo::Tile);
+  if (bufferSize_ != mosaicSize) {
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    MO_CHECK_GL_ERROR;
+    auto t = mosaic_->cTilesBegin();
+    glBufferData(GL_ARRAY_BUFFER, mosaicSize, &*t, GL_STATIC_DRAW);
+    MO_CHECK_GL_ERROR;
+    bufferSize_ = mosaicSize;
+  }
+
+#if 0
+  glGenTextures(1, &tileTextures_);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
+  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 512, 512, 100);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  //glTexSubImage3D(GL_TEXTURE_2D_ARRAY, ...);
+  MO_CHECK_GL_ERROR;
+#endif
 }
 
 }

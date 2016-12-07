@@ -25,9 +25,7 @@ void Renderer::render() {
   }
   bindVAO();
   glUseProgram(shaderProgram_);
-#if 0
   draw();
-#endif 
 }
 
 void Renderer::createShaderProgram() {

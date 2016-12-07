@@ -15,7 +15,8 @@ public:
   void setMosaic(Mosaic* mosaic) override;
 
 private:
-  int size_;
+  int bufferSize_;
+  const Mosaic* mosaic_;
   GLuint vbo_;
   GLuint vao_;
 #if 0
@@ -26,6 +27,8 @@ private:
   const char* fragmentShaderSource() override;
   void bindVAO() override;
   void draw() override;
+
+  void setupVAO();
 };
 
 }
