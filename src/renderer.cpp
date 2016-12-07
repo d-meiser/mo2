@@ -23,8 +23,8 @@ void Renderer::render() {
   if (!shaderProgram_) {
     createShaderProgram();
   }
-  bindVAO();
   glUseProgram(shaderProgram_);
+  bindVAO();
   draw();
 }
 
