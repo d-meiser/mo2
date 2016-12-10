@@ -17,8 +17,8 @@ static const char vShaderSource[] =
     "in float height;\n"
     "in float rotation;\n"
     "\n"
-    "uniform float viewPortWidth = 1.0f;\n"
-    "uniform float viewPortHeight = 1.0f;\n"
+    "uniform float viewPortWidth = 1000.0f;\n"
+    "uniform float viewPortHeight = 1000.0f;\n"
     "uniform float magnification = 1.0f;\n"
     "uniform float numTiles = 10.0f;\n"
     "\n"
@@ -29,37 +29,51 @@ static const char vShaderSource[] =
     "  vec2( 0.5f, -0.5f)\n"
     ");\n"
     "\n"
+    "#define NUM_COLORS 3\n"
+    "const vec4 colors[] = vec4[3](\n"
+    "  vec4(1.0, 0.0, 0.0, 1.0),\n"
+    "  vec4(0.0, 1.0, 0.0, 1.0),\n"
+    "  vec4(0.0, 0.0, 1.0, 1.0)\n"
+    ");\n"
+    "\n"
+    "out vec4 color;\n"
+    "\n"
     "void main(void)\n"
     "{\n"
-    "    vec2 offset = pos[gl_VertexID];\n"
-    "    float c = cos(rotation);\n"
-    "    float s = sin(rotation);\n"
-    "    float x_ = (x + width * offset.x);\n"
-    "    float y_ = (y + height * offset.y);\n"
-    "    gl_Position = vec4(2.0f * magnification * (c * x_ - s * y_) / viewPortWidth,\n"
-    "                       2.0f * magnification * (s * x_ + c * y_) / viewPortHeight,\n"
+    "    vec2 offset_ = pos[gl_VertexID];\n"
+    "    offset_.x *= width;\n"
+    "    offset_.y *= height;\n"
+    "    float c_ = cos(rotation);\n"
+    "    float s_ = sin(rotation);\n"
+    "    float x_ = (x + c_ * offset_.x - s_ * offset_.y);\n"
+    "    float y_ = (y + s_ * offset_.x + c_ * offset_.y);\n"
+    "    gl_Position = vec4(2.0f * magnification * x_ / viewPortWidth,\n"
+    "                       2.0f * magnification * y_ / viewPortHeight,\n"
     "                       (gl_InstanceID - numTiles) / numTiles,\n"
     "                       1.0f);\n"
+    "    color = colors[gl_InstanceID % NUM_COLORS];\n"
     "}\n"
     ;
 
 static const char fShaderSource[] =
     "#version 330\n"
     "\n"
+    "in vec4 color;\n"
+    "\n"
     "void main(void)\n"
     "{\n"
-    "    gl_FragColor = vec4(0.3f, 0.3f, 0.7f, 0.3f);\n"
+    "  gl_FragColor = color;\n"
     "}\n"
     ;
 
 MosaicRendererOutline::MosaicRendererOutline() :
-    bufferSize_(0),
     vbo_(0),
     vao_(0),
-    viewPortWidth_(-1.0f),
-    viewPortHeight_(-1.0f),
-    magnification_(-1.0f),
-    numTiles_(-1.0f) {
+    glBuffersUpToDate_(false),
+    viewPortWidth_(-1),
+    viewPortHeight_(-1),
+    magnification_(-1),
+    numTiles_(-1) {
 }
 
 MosaicRendererOutline::~MosaicRendererOutline() {
@@ -74,6 +88,7 @@ void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
       [](const Tile& t) {
         return MyTile{t.x_, t.y_, t.angle_, t.width(), t.height()};
       });
+  glBuffersUpToDate_ = false;
 }
 
 const char* MosaicRendererOutline::vertexShaderSource() {
@@ -100,6 +115,10 @@ void MosaicRendererOutline::draw() {
 
   const GLfloat color[] = {0.2f, 0.2f, 0.2f, 1.0f};
   glClearBufferfv(GL_COLOR, 0, color);
+  const float one = 1.0f;
+  glClearBufferfv(GL_DEPTH, 0, &one);
+  MO_CHECK_GL_ERROR;
+
 
   if (viewPortWidth_ < 0) {
     getUniformLocations();
@@ -132,40 +151,51 @@ void MosaicRendererOutline::setupVAO() {
 
     GLint program;
     glGetIntegerv(GL_CURRENT_PROGRAM, &program);
+    MO_CHECK_GL_ERROR;
 
     glEnableVertexAttribArray(glGetAttribLocation(program, "x"));
+    glEnableVertexAttribArray(glGetAttribLocation(program, "y"));
+    glEnableVertexAttribArray(glGetAttribLocation(program, "width"));
+    glEnableVertexAttribArray(glGetAttribLocation(program, "height"));
+    glEnableVertexAttribArray(glGetAttribLocation(program, "rotation"));
+    MO_CHECK_GL_ERROR;
+
     glVertexAttribPointer(glGetAttribLocation(program, "x"),
         1, GL_FLOAT, false, sizeof(MyTile),
         reinterpret_cast<void*>(0 * sizeof(float)));
-
-    glEnableVertexAttribArray(glGetAttribLocation(program, "y"));
     glVertexAttribPointer(glGetAttribLocation(program, "y"),
         1, GL_FLOAT, false, sizeof(MyTile),
         reinterpret_cast<void*>(1 * sizeof(float)));
-    glEnableVertexAttribArray(glGetAttribLocation(program, "width"));
     glVertexAttribPointer(glGetAttribLocation(program, "width"),
         1, GL_FLOAT, false, sizeof(MyTile),
-        reinterpret_cast<void*>(2 * sizeof(float)));
-    glEnableVertexAttribArray(glGetAttribLocation(program, "height"));
+        reinterpret_cast<void*>(3 * sizeof(float)));
     glVertexAttribPointer(glGetAttribLocation(program, "height"),
         1, GL_FLOAT, false, sizeof(MyTile),
-        reinterpret_cast<void*>(3 * sizeof(float)));
-    glEnableVertexAttribArray(glGetAttribLocation(program, "rotation"));
+        reinterpret_cast<void*>(4 * sizeof(float)));
     glVertexAttribPointer(glGetAttribLocation(program, "rotation"),
         1, GL_FLOAT, false, sizeof(MyTile),
-        reinterpret_cast<void*>(3 * sizeof(float)));
+        reinterpret_cast<void*>(2 * sizeof(float)));
+    MO_CHECK_GL_ERROR;
+
+    glVertexAttribDivisor(glGetAttribLocation(program, "x"), 1);
+    glVertexAttribDivisor(glGetAttribLocation(program, "y"), 1);
+    glVertexAttribDivisor(glGetAttribLocation(program, "width"), 1);
+    glVertexAttribDivisor(glGetAttribLocation(program, "height"), 1);
+    glVertexAttribDivisor(glGetAttribLocation(program, "rotation"), 1);
     MO_CHECK_GL_ERROR;
   }
 
   int mosaicSize = tiles_.size() * sizeof(MyTile);
-  if (bufferSize_ != mosaicSize && !tiles_.empty()) {
+  if (!glBuffersUpToDate_ && !tiles_.empty()) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo_);
     MO_CHECK_GL_ERROR;
-    glBufferData(GL_ARRAY_BUFFER, mosaicSize, &tiles_[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mosaicSize, &tiles_[0], GL_DYNAMIC_DRAW);
     MO_CHECK_GL_ERROR;
-    bufferSize_ = mosaicSize;
+    glBuffersUpToDate_ = true;
   }
 
+  glBindVertexArray(vao_);
+  MO_CHECK_GL_ERROR;
 #if 0
   glGenTextures(1, &tileTextures_);
   glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);

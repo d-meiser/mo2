@@ -16,9 +16,9 @@ public:
   void setMosaic(Mosaic* mosaic) override;
 
 private:
-  int bufferSize_;
   GLuint vbo_;
   GLuint vao_;
+  bool glBuffersUpToDate_;
 
   struct MyTile {
     float x_;

@@ -23,15 +23,19 @@ struct MosaicRendererOutline : public ::testing::Test {
     mosaic(Mo::Image(150, 100), 1.4f)
   {}
   virtual void SetUp() {
-    createSomeModel(2);
+    createSomeModel(30);
   }
   virtual void TearDown() {}
   void createSomeModel(int numTiles) {
     std::vector<Mo::Tile> tiles;
     for (int i = 0; i != numTiles; ++i) {
       tiles.emplace_back(
-          Mo::Tile{0, 0, 0, 1.0f, std::unique_ptr<Mo::Image>(
-              new Mo::Image(30, 20))});
+          Mo::Tile{static_cast<float>(i * 10 - 300),
+                   static_cast<float>(i * 20 - 300),
+                   static_cast<float>(i * 0.1),
+                   static_cast<float>(1.0f - 0.01 * i),
+                   std::unique_ptr<Mo::Image>(
+                       new Mo::Image(30 + i, 20 + 2 * i))});
     }
     mosaic.addTiles(&tiles[0], &tiles[0] + tiles.size());
   }
@@ -59,7 +63,7 @@ TEST_F(MosaicRendererOutline, CanRender) {
 
   int width;
   int height;
-  for (int i = 0; ; ++i) {
+  for (int i = 0; i < 2; ++i) {
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
     renderer.render();
@@ -82,7 +86,7 @@ int main(int argn, char* argv[]) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  //glfwWindowHint(GLFW_VISIBLE, false);
+  glfwWindowHint(GLFW_VISIBLE, false);
   window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
   glfwMakeContextCurrent(window);
 
