@@ -78,8 +78,15 @@ MosaicRendererTextured::MosaicRendererTextured() :
 }
 
 MosaicRendererTextured::~MosaicRendererTextured() {
-  glDeleteBuffers(1, &vbo_);
-  glDeleteVertexArrays(1, &vao_);
+  if (vbo_) {
+    glDeleteBuffers(1, &vbo_);
+  }
+  if (vao_) {
+    glDeleteVertexArrays(1, &vao_);
+  }
+  if (tileTextures_) {
+    glDeleteTextures(1, &tileTextures_);
+  }
 }
 
 void MosaicRendererTextured::setMosaic(Mosaic* mosaic) {
@@ -230,6 +237,9 @@ void MosaicRendererTextured::getUniformLocations() {
 } 
 
 void MosaicRendererTextured::createTileTextures() {
+  if (tileTextures_) {
+    glDeleteTextures(1, &tileTextures_);
+  }
   glGenTextures(1, &tileTextures_);
   glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
   glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

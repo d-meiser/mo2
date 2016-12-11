@@ -77,8 +77,12 @@ MosaicRendererOutline::MosaicRendererOutline() :
 }
 
 MosaicRendererOutline::~MosaicRendererOutline() {
-  glDeleteBuffers(1, &vbo_);
-  glDeleteVertexArrays(1, &vao_);
+  if (vbo_) {
+    glDeleteBuffers(1, &vbo_);
+  }
+  if (vao_) {
+    glDeleteVertexArrays(1, &vao_);
+  }
 }
 
 void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
