@@ -27,6 +27,7 @@ public:
   int numComponents() const;
   void setQuality(int quality);
   int quality() const;
+  void stretch(int width, int height, unsigned char*) const;
 
   bool operator==(const Image& rhs) const;
 

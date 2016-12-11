@@ -91,4 +91,8 @@ void Mosaic::reduceSize(size_t newSize) {
   tiles_.resize(newSize);
 }
 
+const std::vector<Tile>& Mosaic::getTiles() const {
+  return tiles_;
+}
+
 }

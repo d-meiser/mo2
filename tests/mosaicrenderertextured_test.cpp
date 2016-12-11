@@ -58,6 +58,7 @@ TEST_F(MosaicRendererTextured, ConstructorTest) {
 TEST_F(MosaicRendererTextured, CanRender) {
   Mo::MosaicRendererTextured renderer;
   renderer.setMosaic(&mosaic);
+  renderer.setTileImages(mosaic.getTiles());
 
   float red = 0.1f;
   float green = 0.2f;

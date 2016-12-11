@@ -63,6 +63,17 @@ int Image::quality() const {
   return quality_;
 }
 
+void Image::stretch(int width, int height, unsigned char* stretched) const {
+  for (int i = 0; i < height; ++i) {
+    for (int j = 0; j < width; ++j) {
+      for (int k = 0; k < numComponents_; ++k) {
+        stretched[j * numComponents_ + k] = 0;
+      }
+    }
+    stretched += pitch_;
+  }
+}
+
 bool Image::operator==(const Image& rhs) const {
   if (numComponents_ != rhs.numComponents_) {
     return false;

@@ -92,6 +92,26 @@ void MosaicRendererTextured::setMosaic(Mosaic* mosaic) {
   glBuffersUpToDate_ = false;
 }
 
+void MosaicRendererTextured::setTileImages(const std::vector<Tile>& tiles) {
+  if (!tileTextures_) {
+    createTileTextures();
+  }
+  MO_CHECK_GL_ERROR;
+  glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
+  // TODO: Figure out width and height from tiles.
+  static const int width = 1<<7;
+  static const int height = 1<<7;
+  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, tiles.size());
+  MO_CHECK_GL_ERROR;
+
+  for (size_t i = 0; i < tiles.size(); ++i) {
+    Image img(width, height);
+    tiles[i].image_->stretch(width, height, img.getPixelData());
+    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1,
+        GL_RGBA, GL_UNSIGNED_BYTE, img.getConstPixelData());
+  }
+}
+
 const char* MosaicRendererTextured::vertexShaderSource() {
   return vShaderSource;
 }
@@ -197,15 +217,6 @@ void MosaicRendererTextured::setupVAO() {
 
   glBindVertexArray(vao_);
   MO_CHECK_GL_ERROR;
-
-  glGenTextures(1, &tileTextures_);
-  glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
-  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 512, 512, 100);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  MO_CHECK_GL_ERROR;
 }
 
 void MosaicRendererTextured::getUniformLocations() {
@@ -217,6 +228,16 @@ void MosaicRendererTextured::getUniformLocations() {
   numTiles_ = glGetUniformLocation(program, "numTiles");
   MO_CHECK_GL_ERROR;
 } 
+
+void MosaicRendererTextured::createTileTextures() {
+  glGenTextures(1, &tileTextures_);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  MO_CHECK_GL_ERROR;
+}
 
 }
 

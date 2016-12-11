@@ -91,6 +91,10 @@ void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
   glBuffersUpToDate_ = false;
 }
 
+void MosaicRendererOutline::setTileImages(const std::vector<Tile>& tiles) {
+  MO_UNUSED(tiles);
+}
+
 const char* MosaicRendererOutline::vertexShaderSource() {
   return vShaderSource;
 }

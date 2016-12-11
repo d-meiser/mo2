@@ -28,6 +28,7 @@ public:
   void addTiles(const Tile* tileBegin, const Tile* tileEnd);
   void clear();
   void reduceSize(size_t newSize);
+  const std::vector<Tile>& getTiles() const;
 
 private:
   TargetImage targetImage_;

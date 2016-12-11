@@ -3,6 +3,7 @@
 
 #include <mo_lib_export.h>
 #include <mosaic_renderer.h>
+#include <tile.h>
 #include <GL/gl3w.h>
 #include <vector>
 
@@ -14,6 +15,7 @@ public:
   MosaicRendererTextured();
   ~MosaicRendererTextured();
   void setMosaic(Mosaic* mosaic) override;
+  void setTileImages(const std::vector<Tile>& tiles) override;
 
 private:
   GLuint vbo_;
@@ -43,6 +45,7 @@ private:
 
   void setupVAO();
   void getUniformLocations();
+  void createTileTextures();
 };
 
 }

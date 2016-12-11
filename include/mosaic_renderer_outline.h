@@ -14,6 +14,7 @@ public:
   MosaicRendererOutline();
   ~MosaicRendererOutline();
   void setMosaic(Mosaic* mosaic) override;
+  void setTileImages(const std::vector<Tile>& tiles) override;
 
 private:
   GLuint vbo_;
