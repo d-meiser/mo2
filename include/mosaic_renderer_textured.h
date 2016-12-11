@@ -9,15 +9,16 @@
 
 namespace Mo {
 
-class MO_LIB_EXPORT MosaicRendererOutline : public MosaicRenderer {
+class MO_LIB_EXPORT MosaicRendererTextured : public MosaicRenderer {
 public:
-  MosaicRendererOutline();
-  ~MosaicRendererOutline();
+  MosaicRendererTextured();
+  ~MosaicRendererTextured();
   void setMosaic(Mosaic* mosaic) override;
 
 private:
   GLuint vbo_;
   GLuint vao_;
+  GLuint tileTextures_;
   bool glBuffersUpToDate_;
 
   struct MyTile {

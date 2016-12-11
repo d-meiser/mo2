@@ -1,4 +1,4 @@
-#include <mosaic_renderer_outline.h>
+#include <mosaic_renderer_textured.h>
 #include <tile.h>
 #include <utilities.h>
 #include <mosaic.h>
@@ -66,9 +66,10 @@ static const char fShaderSource[] =
     "}\n"
     ;
 
-MosaicRendererOutline::MosaicRendererOutline() :
+MosaicRendererTextured::MosaicRendererTextured() :
     vbo_(0),
     vao_(0),
+    tileTextures_(0),
     glBuffersUpToDate_(false),
     viewPortWidth_(-1),
     viewPortHeight_(-1),
@@ -76,12 +77,12 @@ MosaicRendererOutline::MosaicRendererOutline() :
     numTiles_(-1) {
 }
 
-MosaicRendererOutline::~MosaicRendererOutline() {
+MosaicRendererTextured::~MosaicRendererTextured() {
   glDeleteBuffers(1, &vbo_);
   glDeleteVertexArrays(1, &vao_);
 }
 
-void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
+void MosaicRendererTextured::setMosaic(Mosaic* mosaic) {
   tiles_.resize(mosaic->size());
   std::transform(mosaic->cTilesBegin(), mosaic->cTilesEnd(),
       tiles_.begin(),
@@ -91,22 +92,22 @@ void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
   glBuffersUpToDate_ = false;
 }
 
-const char* MosaicRendererOutline::vertexShaderSource() {
+const char* MosaicRendererTextured::vertexShaderSource() {
   return vShaderSource;
 }
 
-const char* MosaicRendererOutline::fragmentShaderSource() {
+const char* MosaicRendererTextured::fragmentShaderSource() {
   return fShaderSource;
 }
 
-void MosaicRendererOutline::bindVAO() {
+void MosaicRendererTextured::bindVAO() {
   MO_CHECK_GL_ERROR;
   setupVAO();
   glBindVertexArray(vao_);
   MO_CHECK_GL_ERROR;
 }
 
-void MosaicRendererOutline::draw() {
+void MosaicRendererTextured::draw() {
   MO_CHECK_GL_ERROR;
   glEnable(GL_DEPTH_TEST);
   glFrontFace(GL_CW);
@@ -137,7 +138,7 @@ void MosaicRendererOutline::draw() {
   MO_CHECK_GL_ERROR;
 }
 
-void MosaicRendererOutline::setupVAO() {
+void MosaicRendererTextured::setupVAO() {
   MO_CHECK_GL_ERROR;
 
   if (!vao_) {
@@ -196,9 +197,18 @@ void MosaicRendererOutline::setupVAO() {
 
   glBindVertexArray(vao_);
   MO_CHECK_GL_ERROR;
+
+  glGenTextures(1, &tileTextures_);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
+  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, 512, 512, 100);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  MO_CHECK_GL_ERROR;
 }
 
-void MosaicRendererOutline::getUniformLocations() {
+void MosaicRendererTextured::getUniformLocations() {
   GLint program;
   glGetIntegerv(GL_CURRENT_PROGRAM, &program);
   viewPortWidth_ = glGetUniformLocation(program, "viewPortWidth");
