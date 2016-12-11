@@ -95,7 +95,6 @@ void Image::readJpegFile(const char *filename) {
   JSAMPROW row_pointer[1];
 
   FILE *infile = fopen( filename, "rb");
-  unsigned long location = 0;
 
   if (!infile) {
     throw std::runtime_error(std::string("Error opening jpeg file ") + filename);
@@ -116,6 +115,7 @@ void Image::readJpegFile(const char *filename) {
       cinfo.output_height * cinfo.num_components);
   row_pointer[0] = (unsigned char *)malloc(
       cinfo.output_width * cinfo.num_components);
+  unsigned long location = 0;
   while (cinfo.output_scanline < cinfo.image_height) {
     jpeg_read_scanlines(&cinfo, row_pointer, 1);
     for (unsigned int i = 0;

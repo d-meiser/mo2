@@ -8,6 +8,11 @@
 #include <image.h>
 #include <tile.h>
 
+using Mo::Testing::testFile;
+
+
+static const int width = 160;
+static const int height = 120;
 
 static GLFWwindow* window;
 
@@ -20,7 +25,7 @@ static void key_callback(GLFWwindow* window, int key, int, int action, int)
 
 struct MosaicRendererOutline : public ::testing::Test {
   MosaicRendererOutline() :
-    mosaic(Mo::Image(150, 100), 1.4f)
+    mosaic(Mo::Image(width, height), 1.4f)
   {}
   virtual void SetUp() {
     createSomeModel(30);
@@ -30,8 +35,8 @@ struct MosaicRendererOutline : public ::testing::Test {
     std::vector<Mo::Tile> tiles;
     for (int i = 0; i != numTiles; ++i) {
       tiles.emplace_back(
-          Mo::Tile{static_cast<float>(i * 10 - 300),
-                   static_cast<float>(i * 20 - 300),
+          Mo::Tile{static_cast<float>(i * 1 - 30),
+                   static_cast<float>(i * 2 - 30),
                    static_cast<float>(i * 0.1),
                    static_cast<float>(1.0f - 0.01 * i),
                    std::unique_ptr<Mo::Image>(
@@ -61,10 +66,7 @@ TEST_F(MosaicRendererOutline, CanRender) {
   glClearDepth(1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  int width;
-  int height;
   for (int i = 0; i < 2; ++i) {
-    glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
     renderer.render();
     glfwSwapBuffers(window);
@@ -73,10 +75,8 @@ TEST_F(MosaicRendererOutline, CanRender) {
   Mo::Image image(width, height);
   glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
       image.getPixelData());
-
-  image.save("outline.jpg");
-  //Mo::Image referenceImage(testFile("passThroughRenderer_master.jpg"));
-  //EXPECT_EQ(referenceImage, image);
+  image.setQuality(100);
+  image.save("mosaicOutlineRenderer_master.jpg");
 }
 
 int main(int argn, char* argv[]) {
@@ -87,7 +87,7 @@ int main(int argn, char* argv[]) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_VISIBLE, false);
-  window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+  window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
   glfwMakeContextCurrent(window);
 
   glfwSetKeyCallback(window, key_callback);

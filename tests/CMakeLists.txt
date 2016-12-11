@@ -56,6 +56,7 @@ endif ()
 set(TEST_FILES
     test_files/test_image_1.jpg
     test_files/passThroughRenderer_master.jpg
+    test_files/mosaicOutlineRenderer_master.jpg
     )
 foreach(f ${TEST_FILES})
     file(COPY ${f} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/test_files)
