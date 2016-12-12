@@ -1,5 +1,6 @@
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/src/include
     ${PROJECT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -15,6 +16,7 @@ generate_export_header(test_utilities)
 set(TESTS
     badnesscomposite_test
     image_test
+    image_scaling_test
     interactiontileborder_test
     interactiontiletile_test
     mosaic_test
