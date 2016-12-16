@@ -221,3 +221,27 @@ TEST(ImageScaling, StretchesAPixelIntoRectangle) {
   EXPECT_NEAR(pixel[2], newPixel[(i * newWidth + j) * 3 + 2], 2);
 }
 
+TEST(ImageScaling, UpSamplesAJPEG) {
+  Mo::Image image(testFile("test_image_1.jpg"));
+  int scaleFactor = 2;
+  Mo::Image scaled(scaleFactor * image.width(),
+      scaleFactor * image.height());
+  image.stretch(scaleFactor * image.width(), 
+      scaleFactor * image.height(), scaled.getPixelData());
+  scaled.setQuality(100);
+  Mo::Image master(testFile("test_image_1_upsampled_master.jpg"));
+  EXPECT_EQ(master, scaled);
+}
+
+// TODO: Need image distance to formulate this test.
+TEST(ImageScaling, DISABLED_DownSamplesAJPEG) {
+  Mo::Image image(testFile("test_image_1.jpg"));
+  double scaleFactor = 0.7;
+  Mo::Image scaled(scaleFactor * image.width(),
+      scaleFactor * image.height());
+  image.stretch(scaleFactor * image.width(), 
+      scaleFactor * image.height(), scaled.getPixelData());
+  scaled.setQuality(100);
+  Mo::Image master(testFile("test_image_1_downsampled_master.jpg"));
+  EXPECT_EQ(master, scaled);
+}
