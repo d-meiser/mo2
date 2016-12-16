@@ -67,7 +67,7 @@ void fillImageWithSignWave(int width, int height,
   }
 }
 
-TEST(ImageScaling, DISABLED_StretchingByFactorOfOneIsIdentity) {
+TEST(ImageScaling, StretchingByFactorOfOneIsIdentity) {
   int width = 160;
   int height = 80;
   Mo::Image original(width, height);
@@ -77,7 +77,7 @@ TEST(ImageScaling, DISABLED_StretchingByFactorOfOneIsIdentity) {
   EXPECT_EQ(original, rescaled);
 }
 
-TEST(ImageScaling, DISABLED_Reproduces1DBandLimitedSignal) {
+TEST(ImageScaling, UpSamples1DBandLimitedSignal) {
   int width = 32;
   int height = 8;
   Mo::Image original(width, height);
@@ -93,7 +93,26 @@ TEST(ImageScaling, DISABLED_Reproduces1DBandLimitedSignal) {
   int j = 10;
   float x = j * dx;
   const unsigned char* pixels = rescaled.getConstPixelData();
-  EXPECT_NEAR(255.0f * std::sin(kx * x), pixels[j * 3], 1.0e-4f);
+  EXPECT_NEAR(255.0f * std::sin(kx * x), pixels[j * 3], 255.0f * 1.0e-2f);
+}
+
+TEST(ImageScaling, DownSamples1DBandLimitedSignal) {
+  int width = 32;
+  int height = 8;
+  Mo::Image original(width, height);
+  float kx = 0.1f;
+  float ky = 0.1f;
+  float kz = 0.1f;
+  fillImageWithSignWave(width, height, kx, ky, kz,
+      original.getPixelData());
+  int newWidth = 0.6 * width;
+  Mo::Image rescaled(newWidth, height);
+  original.stretch(newWidth, height, rescaled.getPixelData());
+  float dx = (width - 1.0f) / (newWidth - 1.0f);
+  int j = 10;
+  float x = j * dx;
+  const unsigned char* pixels = rescaled.getConstPixelData();
+  EXPECT_NEAR(255.0f * std::sin(kx * x), pixels[j * 3], 255.0f * 1.0e-2f);
 }
 
 TEST(ImageScaling, ReproducesSinglePixel) {
@@ -162,5 +181,43 @@ TEST(ImageScaling, StretchesAPixelIntoColumn) {
   EXPECT_NEAR(pixel[0], newPixel[i * 3 * width + 0 + 0], 2);
   EXPECT_NEAR(pixel[1], newPixel[i * 3 * width + 0 + 1], 2);
   EXPECT_NEAR(pixel[2], newPixel[i * 3 * width + 0 + 2], 2);
+}
+
+TEST(ImageScaling, StretchesAPixelIntoRectangle) {
+  int width = 1;
+  int height = 1;
+  Mo::Image original(width, height);
+  unsigned char* pixel = original.getPixelData();
+  pixel[0] = 100;
+  pixel[1] = 31;
+  pixel[2] = 90;
+  int newWidth = 20;
+  int newHeight = 10;
+  Mo::Image rescaled(newWidth, newHeight);
+  original.stretch(newWidth, newHeight, rescaled.getPixelData());
+  const unsigned char* newPixel = rescaled.getConstPixelData();
+  int i = 0;
+  int j = 0;
+  EXPECT_NEAR(pixel[0], newPixel[(i * newWidth + j) * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[(i * newWidth + j) * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[(i * newWidth + j) * 3 + 2], 2);
+  i = 2;
+  EXPECT_NEAR(pixel[0], newPixel[(i * newWidth + j) * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[(i * newWidth + j) * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[(i * newWidth + j) * 3 + 2], 2);
+  i = 4;
+  EXPECT_NEAR(pixel[0], newPixel[(i * newWidth + j) * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[(i * newWidth + j) * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[(i * newWidth + j) * 3 + 2], 2);
+  i = 2;
+  j = 5;
+  EXPECT_NEAR(pixel[0], newPixel[(i * newWidth + j) * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[(i * newWidth + j) * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[(i * newWidth + j) * 3 + 2], 2);
+  i = 4;
+  j = 8;
+  EXPECT_NEAR(pixel[0], newPixel[(i * newWidth + j) * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[(i * newWidth + j) * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[(i * newWidth + j) * 3 + 2], 2);
 }
 

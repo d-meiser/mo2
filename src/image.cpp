@@ -90,7 +90,7 @@ void Image::stretch(int width, int height, unsigned char* stretched) const {
           jprime = jprime < 0 ? 0 : jprime;
           jprime = jprime > width_ - 1 ? width_ - 1 : jprime;
           pixelVal +=
-              L[m] * pixelData_[(i * width + jprime) * numComponents_ + k];
+              L[m] * pixelData_[(i * width_ + jprime) * numComponents_ + k];
         }
         pixelVal = pixelVal < 0 ? 0 : pixelVal;
         pixelVal = pixelVal > 255.0f ? 255.0f : pixelVal;
