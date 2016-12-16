@@ -128,5 +128,13 @@ TEST(ImageScaling, StretchesAPixelIntoRow) {
   EXPECT_NEAR(pixel[0], newPixel[i * 3 + 0], 2);
   EXPECT_NEAR(pixel[1], newPixel[i * 3 + 1], 2);
   EXPECT_NEAR(pixel[2], newPixel[i * 3 + 2], 2);
+  i = 2;
+  EXPECT_NEAR(pixel[0], newPixel[i * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[i * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[i * 3 + 2], 2);
+  i = 4;
+  EXPECT_NEAR(pixel[0], newPixel[i * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[i * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[i * 3 + 2], 2);
 }
 
