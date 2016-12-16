@@ -7,6 +7,7 @@
 #include <cmath>
 #include <lanczos.h>
 #include <iostream>
+#include <array>
 
 
 namespace Mo {
