@@ -138,3 +138,29 @@ TEST(ImageScaling, StretchesAPixelIntoRow) {
   EXPECT_NEAR(pixel[2], newPixel[i * 3 + 2], 2);
 }
 
+TEST(ImageScaling, StretchesAPixelIntoColumn) {
+  int width = 1;
+  int height = 1;
+  Mo::Image original(width, height);
+  unsigned char* pixel = original.getPixelData();
+  pixel[0] = 100;
+  pixel[1] = 31;
+  pixel[2] = 90;
+  int newHeight = 10;
+  Mo::Image rescaled(width, newHeight);
+  original.stretch(width, newHeight, rescaled.getPixelData());
+  const unsigned char* newPixel = rescaled.getConstPixelData();
+  int i = 0;
+  EXPECT_NEAR(pixel[0], newPixel[i * 3 * width + 0 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[i * 3 * width + 0 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[i * 3 * width + 0 + 2], 2);
+  i = 2;
+  EXPECT_NEAR(pixel[0], newPixel[i * 3 * width + 0 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[i * 3 * width + 0 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[i * 3 * width + 0 + 2], 2);
+  i = 4;
+  EXPECT_NEAR(pixel[0], newPixel[i * 3 * width + 0 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[i * 3 * width + 0 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[i * 3 * width + 0 + 2], 2);
+}
+
