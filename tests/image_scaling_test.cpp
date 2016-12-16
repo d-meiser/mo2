@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <lanczos.h>
+#include <cmath>
 
 
 TEST(Sinc, IsOneAtZero) {
@@ -36,3 +37,24 @@ TEST(Lanczos, HasCompactSupport) {
   }
 }
 
+static double massOfLanczosKernel(double x) {
+  static const int a = 3;
+  x = x - std::floor(x) - a + 1;
+  double sum = 0.0;
+  for (int i = 0; i < 6; ++i) {
+    sum += Mo::Lanczos(a, x);
+    x += 1.0;
+  }
+  return sum;
+}
+
+TEST(Lanczos, SumsToApproximatelyOne) {
+  double x = 0.0;
+  int numSamples = 23;
+  for (int i = 0; i < numSamples; ++i) {
+    EXPECT_NEAR(1.0, massOfLanczosKernel(x), 0.1) <<
+      "x == " << x <<
+      "massOfLanczosKernel(x) == " << massOfLanczosKernel(x);
+    x += 1.0 / numSamples;
+  }
+}

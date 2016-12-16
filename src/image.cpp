@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <cmath>
 #include <lanczos.h>
+#include <iostream>
 
 
 namespace Mo {
@@ -75,8 +76,10 @@ void Image::stretch(int width, int height, unsigned char* stretched) const {
   for (int j = 0; j < width; ++j) {
     float x = j * dx;
     std::array<float, 2 * a> L;
+    float lmNorm = 0.0f;
     for (int m = 0; m < 2 * a; ++m) {
-      L[m] = Lanczos(a, x - std::floor(x) - a + 1 + m);
+      L[m] = Lanczos(a, x - std::floor(x) + a - 1 - m);
+      lmNorm += L[m];
     }
     for (int i = 0; i < height_; ++i) {
       for (int k = 0; k < numComponents_; ++k) {
@@ -84,7 +87,7 @@ void Image::stretch(int width, int height, unsigned char* stretched) const {
         for (int m = 0; m < 2 * a; ++m) {
           int jprime = std::floor(x) - a + 1 + m; 
           jprime = jprime < 0 ? 0 : jprime;
-          jprime = jprime > width - 1 ? width - 1 : jprime;
+          jprime = jprime > width_ - 1 ? width_ - 1 : jprime;
           pixelVal +=
               L[m] * pixelData_[(i * width + jprime) * numComponents_ + k];
         }
@@ -101,15 +104,15 @@ void Image::stretch(int width, int height, unsigned char* stretched) const {
     float y = i * dy;
     std::array<float, 2 * a> L;
     for (int m = 0; m < 2 * a; ++m) {
-      L[m] = Lanczos(a, y - std::floor(y) - a + 1 + m);
+      L[m] = Lanczos(a, y - std::floor(y) + a - 1 - m);
     }
     for (int j = 0; j < width; ++ j) {
       for (int k = 0; k < numComponents_; ++k) {
         float pixelVal = 0.0f;
-        for (int m = 0; m < 2 * a + 1; ++m) {
+        for (int m = 0; m < 2 * a; ++m) {
           int iprime = std::floor(y) - a + 1 + m;
           iprime = iprime < 0 ? 0 : iprime;
-          iprime = iprime > height - 1 ? height - 1 : iprime;
+          iprime = iprime > height_ - 1 ? height_ - 1 : iprime;
           pixelVal +=
             L[m] * tmp[(iprime * width + j) * numComponents_ + k];
         }

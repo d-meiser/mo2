@@ -13,8 +13,8 @@ float Sinc(float x) {
 }
 
 float Lanczos(int n, float x) {
-  if (x < n) {
-    return Sinc(n * x) * Sinc(x);
+  if (std::abs(x) < n) {
+    return Sinc(x / n) * Sinc(x);
   } else {
     return 0.0f;
   }

@@ -111,3 +111,22 @@ TEST(ImageScaling, ReproducesSinglePixel) {
   EXPECT_EQ(pixel[1], newPixel[1]);
   EXPECT_EQ(pixel[2], newPixel[2]);
 }
+
+TEST(ImageScaling, StretchesAPixelIntoRow) {
+  int width = 1;
+  int height = 1;
+  Mo::Image original(width, height);
+  unsigned char* pixel = original.getPixelData();
+  pixel[0] = 100;
+  pixel[1] = 31;
+  pixel[2] = 90;
+  int newWidth = 10;
+  Mo::Image rescaled(newWidth, height);
+  original.stretch(newWidth, height, rescaled.getPixelData());
+  const unsigned char* newPixel = rescaled.getConstPixelData();
+  int i = 0;
+  EXPECT_NEAR(pixel[0], newPixel[i * 3 + 0], 2);
+  EXPECT_NEAR(pixel[1], newPixel[i * 3 + 1], 2);
+  EXPECT_NEAR(pixel[2], newPixel[i * 3 + 2], 2);
+}
+
