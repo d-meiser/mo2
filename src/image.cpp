@@ -4,6 +4,10 @@
 #include <jpeglib.h>
 #include <stdlib.h>
 #include <stdexcept>
+#include <cmath>
+#include <lanczos.h>
+#include <iostream>
+#include <array>
 
 
 namespace Mo {
@@ -61,6 +65,64 @@ void Image::setQuality(int quality) {
 
 int Image::quality() const {
   return quality_;
+}
+
+void Image::stretch(int width, int height, unsigned char* stretched) const {
+  static const int a = 3;
+
+  // stretch rows
+  std::vector<unsigned char> tmp(width * height_ * numComponents_);
+
+  const float dx = static_cast<float>(width_) / static_cast<float>(width);
+  for (int j = 0; j < width; ++j) {
+    float x = j * dx;
+    std::array<float, 2 * a> L;
+    float lmNorm = 0.0f;
+    for (int m = 0; m < 2 * a; ++m) {
+      L[m] = Lanczos(a, x - std::floor(x) + a - 1 - m);
+      lmNorm += L[m];
+    }
+    for (int i = 0; i < height_; ++i) {
+      for (int k = 0; k < numComponents_; ++k) {
+        float pixelVal = 0.0f;
+        for (int m = 0; m < 2 * a; ++m) {
+          int jprime = std::floor(x) - a + 1 + m; 
+          jprime = jprime < 0 ? 0 : jprime;
+          jprime = jprime > width_ - 1 ? width_ - 1 : jprime;
+          pixelVal +=
+              L[m] * pixelData_[(i * width_ + jprime) * numComponents_ + k];
+        }
+        pixelVal = pixelVal < 0 ? 0 : pixelVal;
+        pixelVal = pixelVal > 255.0f ? 255.0f : pixelVal;
+        tmp[(i * width + j) * numComponents_ + k] = pixelVal;
+      }
+    }
+  }
+
+  // stretch columns
+  const float dy = static_cast<float>(height_) / static_cast<float>(height);
+  for (int i = 0; i < height; ++i) {
+    float y = i * dy;
+    std::array<float, 2 * a> L;
+    for (int m = 0; m < 2 * a; ++m) {
+      L[m] = Lanczos(a, y - std::floor(y) + a - 1 - m);
+    }
+    for (int j = 0; j < width; ++ j) {
+      for (int k = 0; k < numComponents_; ++k) {
+        float pixelVal = 0.0f;
+        for (int m = 0; m < 2 * a; ++m) {
+          int iprime = std::floor(y) - a + 1 + m;
+          iprime = iprime < 0 ? 0 : iprime;
+          iprime = iprime > height_ - 1 ? height_ - 1 : iprime;
+          pixelVal +=
+            L[m] * tmp[(iprime * width + j) * numComponents_ + k];
+        }
+        pixelVal = pixelVal < 0 ? 0 : pixelVal;
+        pixelVal = pixelVal > 255.0f ? 255.0f : pixelVal;
+        stretched[(i * width + j) * numComponents_ + k] = pixelVal;
+      }
+    }
+  }
 }
 
 bool Image::operator==(const Image& rhs) const {

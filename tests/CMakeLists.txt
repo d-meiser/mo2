@@ -1,5 +1,6 @@
 include_directories(
     ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/src/include
     ${PROJECT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
@@ -15,6 +16,7 @@ generate_export_header(test_utilities)
 set(TESTS
     badnesscomposite_test
     image_test
+    image_scaling_test
     interactiontileborder_test
     interactiontiletile_test
     mosaic_test
@@ -38,6 +40,7 @@ set(OPENGL_TESTS
     framebuffer_test
     mosaicrenderer_test
     mosaicrendereroutline_test
+    mosaicrenderertextured_test
     renderer_test
     )
 foreach(t ${OPENGL_TESTS})
@@ -56,6 +59,8 @@ endif ()
 set(TEST_FILES
     test_files/test_image_1.jpg
     test_files/passThroughRenderer_master.jpg
+    test_files/test_image_1_upsampled_master.jpg
+    test_files/test_image_1_downsampled_master.jpg
     test_files/mosaicOutlineRenderer_master.jpg
     )
 foreach(f ${TEST_FILES})

@@ -3,23 +3,27 @@
 
 #include <mo_lib_export.h>
 #include <mosaic_renderer.h>
+#include <tile.h>
 #include <GL/gl3w.h>
 #include <vector>
 
 
 namespace Mo {
 
-class MO_LIB_EXPORT MosaicRendererOutline : public MosaicRenderer {
+class MO_LIB_EXPORT MosaicRendererTextured : public MosaicRenderer {
 public:
-  MosaicRendererOutline();
-  ~MosaicRendererOutline();
+  MosaicRendererTextured();
+  ~MosaicRendererTextured();
   void setMosaic(Mosaic* mosaic) override;
   void setTileImages(const std::vector<Tile>& tiles) override;
 
 private:
   GLuint vbo_;
   GLuint vao_;
+  GLuint tileTextures_;
   bool glBuffersUpToDate_;
+  int width_;
+  int height_;
 
   struct MyTile {
     float x_;
@@ -43,6 +47,7 @@ private:
 
   void setupVAO();
   void getUniformLocations();
+  void createTileTextures();
 };
 
 }
