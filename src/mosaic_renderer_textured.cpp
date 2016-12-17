@@ -73,7 +73,7 @@ static const char vShaderSource[] =
     "                       2.0f * magnification * y_ / viewPortHeight,\n"
     "                       (gl_InstanceID - numTiles) / numTiles,\n"
     "                       1.0f);\n"
-    "    texCoord = pos[gl_VertexID];\n"
+    "    texCoord = 0.5 + pos[gl_VertexID];\n"
     "    layer = gl_InstanceID;\n"
     "}\n"
     ;
@@ -89,7 +89,6 @@ static const char fShaderSource[] =
     "{\n"
     "    gl_FragColor = texture(texture0,\n"
     "                           vec3(texCoord.x, texCoord.y, layer)) / 255.0;\n"
-    "    gl_FragColor = gl_FragColor.wzyx;\n"
     "}\n"
     ;
 
