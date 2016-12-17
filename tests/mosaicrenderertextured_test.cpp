@@ -98,7 +98,7 @@ TEST_F(MosaicRendererTextured, CanRender) {
       image.getPixelData());
 
   Mo::Image master(testFile("mosaicTexturedRenderer_master.jpg"));
-  //EXPECT_EQ(master, image);
+  EXPECT_LT(master.distance(image), 3.0e-2f);
 }
 
 int main(int argn, char* argv[]) {

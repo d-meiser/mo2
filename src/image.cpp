@@ -8,6 +8,7 @@
 #include <lanczos.h>
 #include <iostream>
 #include <array>
+#include <cassert>
 
 
 namespace Mo {
@@ -135,20 +136,27 @@ bool Image::operator==(const Image& rhs) const {
   if (height_ != rhs.height_) {
     return false;
   }
+  static const float tolerance = 1.0e-2;
+  return distance(rhs) < tolerance ;
+}
+
+float Image::distance(const Image& other) const {
+  assert(numComponents_ == other.numComponents_);
+  assert(width_ == other.width_);
+  assert(height_ == other.height_);
   double l1Difference = 0;
   for (int i = 0; i != height_; ++i) {
     for (int j = 0; j != width_; ++j) {
       for (int k = 0; k < numComponents_; ++k) {
         int difference =
           (int)pixelData_[(i * width_ + j) * numComponents_ + k] - 
-          (int)rhs.pixelData_[(i * width_ + j) * numComponents_ + k];
+          (int)other.pixelData_[(i * width_ + j) * numComponents_ + k];
         l1Difference += std::abs(difference);
       }
     }
   }
   double meanError = l1Difference / (255 * numComponents_ * width_ * height_);
-  static const double tolerance = 1.0e-2;
-  return meanError < tolerance ;
+  return static_cast<float>(meanError);
 }
 
 void Image::readJpegFile(const char *filename) {

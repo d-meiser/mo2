@@ -30,6 +30,7 @@ public:
   void stretch(int width, int height, unsigned char*) const;
 
   bool operator==(const Image& rhs) const;
+  float distance(const Image& other) const;
 
 private:
   int width_;

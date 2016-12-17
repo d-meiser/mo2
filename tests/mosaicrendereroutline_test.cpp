@@ -75,8 +75,9 @@ TEST_F(MosaicRendererOutline, CanRender) {
   Mo::Image image(width, height);
   glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
       image.getPixelData());
-  image.setQuality(100);
-  image.save("mosaicOutlineRenderer_master.jpg");
+
+  Mo::Image master(testFile("mosaicOutlineRenderer_master.jpg"));
+  EXPECT_LT(master.distance(image), 7.0e-2f);
 }
 
 int main(int argn, char* argv[]) {
