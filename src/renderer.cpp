@@ -10,6 +10,7 @@ namespace Mo {
 
 
 static void checkShaderCompilationStatus(GLuint shader, GLenum shaderType);
+static void checkShaderLinkStatus(GLuint program);
 
 Renderer::Renderer() : shaderProgram_(0) {}
 
@@ -43,13 +44,14 @@ void Renderer::createShaderProgram() {
   glShaderSource(fragmentShader, 1, fSources, 0);
   glCompileShader(fragmentShader);
   MO_CHECK_GL_ERROR;
-  checkShaderCompilationStatus(vertexShader, GL_FRAGMENT_SHADER);
+  checkShaderCompilationStatus(fragmentShader, GL_FRAGMENT_SHADER);
 
   shaderProgram_ = glCreateProgram();
   glAttachShader(shaderProgram_, vertexShader);
   glAttachShader(shaderProgram_, fragmentShader);
   glLinkProgram(shaderProgram_);
   MO_CHECK_GL_ERROR;
+  checkShaderLinkStatus(shaderProgram_);
 
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
@@ -81,6 +83,28 @@ void checkShaderCompilationStatus(GLuint shader, GLenum shaderType) {
     std::string infoLog;
     infoLog.resize(maxLength);
     glGetShaderInfoLog(shader, maxLength, 0, &infoLog[0]);
+    errorMessage << infoLog << std::endl;
+
+    throw std::runtime_error(errorMessage.str());
+  }
+}
+
+void checkShaderLinkStatus(GLuint program) {
+  GLint success = 0;
+  glGetProgramiv(program, GL_LINK_STATUS, &success);
+  MO_CHECK_GL_ERROR;
+  if (GL_FALSE == success) {
+    std::stringstream errorMessage;
+    errorMessage << "Failed to link.";
+    errorMessage << "Link log:\n";
+
+    GLint maxLength;
+    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
+    MO_CHECK_GL_ERROR;
+    std::string infoLog;
+    infoLog.resize(maxLength);
+    glGetProgramInfoLog(program, maxLength, 0, &infoLog[0]);
+    MO_CHECK_GL_ERROR;
     errorMessage << infoLog << std::endl;
 
     throw std::runtime_error(errorMessage.str());

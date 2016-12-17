@@ -8,6 +8,7 @@
 #include <image.h>
 #include <tile.h>
 
+
 using Mo::Testing::testFile;
 
 
@@ -22,6 +23,24 @@ static void key_callback(GLFWwindow* window, int key, int, int action, int)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+namespace {
+
+void fillImage(int i, Mo::Image* img) {
+  unsigned char* p = img->getPixelData();
+  for (int m = 0; m < img->height(); ++m) {
+    for (int n = 0; n < img->width(); ++n) {
+      for (int k = 0; k < 3; ++k) {
+        if (i % 3 == k) {
+          p[(m * img->width() + n) * 3 + k] = 150;
+        } else {
+          p[(m * img->width() + n) * 3 + k] = 50;
+        }
+      }
+    }
+  }
+}
+
+}
 
 struct MosaicRendererTextured : public ::testing::Test {
   MosaicRendererTextured() :
@@ -41,6 +60,7 @@ struct MosaicRendererTextured : public ::testing::Test {
                    static_cast<float>(1.0f - 0.01 * i),
                    std::unique_ptr<Mo::Image>(
                        new Mo::Image(30 + i, 20 + 2 * i))});
+      fillImage(i, tiles[i].image_.get());
     }
     mosaic.addTiles(&tiles[0], &tiles[0] + tiles.size());
   }

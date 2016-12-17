@@ -22,6 +22,8 @@ private:
   GLuint vao_;
   GLuint tileTextures_;
   bool glBuffersUpToDate_;
+  int width_;
+  int height_;
 
   struct MyTile {
     float x_;

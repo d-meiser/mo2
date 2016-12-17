@@ -8,6 +8,34 @@
 
 namespace Mo {
 
+namespace {
+
+int nextPowerOfTwo(int m) {
+  int maxPowerOfTwo = 31;
+  for (int i = 1; i < maxPowerOfTwo; ++i) {
+    int powerOfTwo = 1 << i;
+    if (powerOfTwo >= m) return powerOfTwo;
+  }
+  return 1 << maxPowerOfTwo;
+}
+
+void findTileSize(const std::vector<Tile>& tiles, int *w, int *h) {
+  static const int defaultSize = 1 << 8;
+  *w = defaultSize;
+  *h = defaultSize;
+  if (tiles.empty()) return;
+  for (const auto& t : tiles) {
+    *w += t.width();
+    *h += t.height();
+  }
+  *w /= tiles.size();
+  *h /= tiles.size();
+  *w = nextPowerOfTwo(*w);
+  *h = nextPowerOfTwo(*h);
+}
+
+}
+
 static const char vShaderSource[] =
     "#version 150\n"
     "\n"
@@ -29,14 +57,8 @@ static const char vShaderSource[] =
     "  vec2( 0.5f, -0.5f)\n"
     ");\n"
     "\n"
-    "#define NUM_COLORS 3\n"
-    "const vec4 colors[] = vec4[3](\n"
-    "  vec4(1.0, 0.0, 0.0, 1.0),\n"
-    "  vec4(0.0, 1.0, 0.0, 1.0),\n"
-    "  vec4(0.0, 0.0, 1.0, 1.0)\n"
-    ");\n"
-    "\n"
-    "out vec4 color;\n"
+    "out vec2 texCoord;\n"
+    "out float layer;\n"
     "\n"
     "void main(void)\n"
     "{\n"
@@ -51,18 +73,23 @@ static const char vShaderSource[] =
     "                       2.0f * magnification * y_ / viewPortHeight,\n"
     "                       (gl_InstanceID - numTiles) / numTiles,\n"
     "                       1.0f);\n"
-    "    color = colors[gl_InstanceID % NUM_COLORS];\n"
+    "    texCoord = pos[gl_VertexID];\n"
+    "    layer = gl_InstanceID;\n"
     "}\n"
     ;
 
 static const char fShaderSource[] =
-    "#version 330\n"
+    "#version 150\n"
     "\n"
-    "in vec4 color;\n"
+    "uniform usampler2DArray texture0;\n"
+    "in vec2 texCoord;\n"
+    "in float layer;\n"
     "\n"
     "void main(void)\n"
     "{\n"
-    "  gl_FragColor = color;\n"
+    "    gl_FragColor = texture(texture0,\n"
+    "                           vec3(texCoord.x, texCoord.y, layer)) / 255.0;\n"
+    "    gl_FragColor = gl_FragColor.wzyx;\n"
     "}\n"
     ;
 
@@ -105,17 +132,15 @@ void MosaicRendererTextured::setTileImages(const std::vector<Tile>& tiles) {
   }
   MO_CHECK_GL_ERROR;
   glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
-  // TODO: Figure out width and height from tiles.
-  static const int width = 1<<7;
-  static const int height = 1<<7;
-  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width, height, tiles.size());
+  findTileSize(tiles, &width_, &height_);
+  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width_, height_, tiles.size());
   MO_CHECK_GL_ERROR;
 
   for (size_t i = 0; i < tiles.size(); ++i) {
-    Image img(width, height);
-    tiles[i].image_->stretch(width, height, img.getPixelData());
-    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width, height, 1,
-        GL_RGBA, GL_UNSIGNED_BYTE, img.getConstPixelData());
+    Image img(width_, height_);
+    tiles[i].image_->stretch(width_, height_, img.getPixelData());
+    glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, width_, height_, 1,
+        GL_RGB, GL_UNSIGNED_BYTE, img.getConstPixelData());
   }
 }
 
@@ -131,6 +156,7 @@ void MosaicRendererTextured::bindVAO() {
   MO_CHECK_GL_ERROR;
   setupVAO();
   glBindVertexArray(vao_);
+  glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
   MO_CHECK_GL_ERROR;
 }
 
