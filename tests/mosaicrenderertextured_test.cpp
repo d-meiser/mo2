@@ -31,9 +31,9 @@ void fillImage(int i, Mo::Image* img) {
     for (int n = 0; n < img->width(); ++n) {
       for (int k = 0; k < 3; ++k) {
         if (i % 3 == k) {
-          p[(m * img->width() + n) * 3 + k] = 150;
+          p[(m * img->width() + n) * 3 + k] = (150 + m) & 0xFF;
         } else {
-          p[(m * img->width() + n) * 3 + k] = 50;
+          p[(m * img->width() + n) * 3 + k] = (50 + n) & 0xFF;
         }
       }
     }

@@ -81,14 +81,14 @@ static const char vShaderSource[] =
 static const char fShaderSource[] =
     "#version 150\n"
     "\n"
-    "uniform usampler2DArray texture0;\n"
+    "uniform sampler2DArray texture0;\n"
     "in vec2 texCoord;\n"
     "in float layer;\n"
     "\n"
     "void main(void)\n"
     "{\n"
     "    gl_FragColor = texture(texture0,\n"
-    "                           vec3(texCoord.x, texCoord.y, layer)) / 255.0;\n"
+    "                           vec3(texCoord.x, texCoord.y, layer));\n"
     "}\n"
     ;
 
