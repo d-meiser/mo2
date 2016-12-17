@@ -87,7 +87,7 @@ TEST_F(MosaicRendererTextured, CanRender) {
   glClearDepth(1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  for (int i = 0; ; ++i) {
+  for (int i = 0; i < 2; ++i) {
     glViewport(0, 0, width, height);
     renderer.render();
     glfwSwapBuffers(window);
@@ -96,8 +96,9 @@ TEST_F(MosaicRendererTextured, CanRender) {
   Mo::Image image(width, height);
   glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
       image.getPixelData());
-  image.setQuality(100);
-  image.save("mosaicOutlineRenderer_master.jpg");
+
+  Mo::Image master(testFile("mosaicTexturedRenderer_master.jpg"));
+  //EXPECT_EQ(master, image);
 }
 
 int main(int argn, char* argv[]) {
@@ -107,7 +108,7 @@ int main(int argn, char* argv[]) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  glfwWindowHint(GLFW_VISIBLE, true);
+  glfwWindowHint(GLFW_VISIBLE, false);
   window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
   glfwMakeContextCurrent(window);
 
