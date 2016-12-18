@@ -2,6 +2,8 @@
 #include <string>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
+#include <chrono>
+#include <iostream>
 
 #include <mo2.h>
 
@@ -63,10 +65,24 @@ int main(int argn, const char *argv[]) {
   renderer.setTileImages(mosaic.getTiles());
 
   glViewport(0, 0, width, height);
+
+  auto start = std::chrono::system_clock::now();
+  long frame = 0;
   while (!glfwWindowShouldClose(window)) {
     renderer.render();
+
     glfwSwapBuffers(window);
     glfwPollEvents();
+
+    if ((frame & 0xFF) == 0) {
+      int numFrames = 0xFF + 1;
+      auto end = std::chrono::system_clock::now();
+      auto elapsed =
+        std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+      std::cout << "FPS: " << numFrames / (1.0e-3 * elapsed.count()) << std::endl;
+      start = end;
+    }
+    ++frame;
   }
 
   terminateOpenGL();
