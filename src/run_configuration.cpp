@@ -28,7 +28,7 @@ void getValue(const char* option, int* value) {
 }
 
 template<typename T>
-void parseOption(int argn, const char *argv[], int *used,
+void parseOption(bool required, int argn, const char *argv[], int *used,
                  const std::string& option, T* value) {
   int i;
   for (i = 1; i != argn; ++i) {
@@ -42,7 +42,7 @@ void parseOption(int argn, const char *argv[], int *used,
       break;
     }
   }
-  if (i == argn) {
+  if (required && i == argn) {
     throw std::runtime_error("Invalid option.");
   }
 }
@@ -56,10 +56,10 @@ RunConfiguration::RunConfiguration(int n, const char *argv[]) {
   }
   std::vector<int> used(n, 0);
 
-  parseOption(n, argv, &used[0], "-t", &targetImageName_);
-  parseOption(n, argv, &used[0], "-o", &outputImageName_);
-  parseOption(n, argv, &used[0], "-w", &targetWidth_);
-  parseOption(n, argv, &used[0], "-h", &targetHeight_);
+  parseOption(true, n, argv, &used[0], "-t", &targetImageName_);
+  parseOption(false, n, argv, &used[0], "-o", &outputImageName_);
+  parseOption(false, n, argv, &used[0], "-w", &targetWidth_);
+  parseOption(false, n, argv, &used[0], "-h", &targetHeight_);
 
   // Done parsing options, now obtain the tile file names.
   for (int i = 1; i != n; ++i) {
