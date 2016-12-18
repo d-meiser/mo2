@@ -88,7 +88,7 @@ static const char fShaderSource[] =
     "void main(void)\n"
     "{\n"
     "    gl_FragColor = texture(texture0,\n"
-    "                           vec3(texCoord.x, texCoord.y, layer));\n"
+    "                           vec3(texCoord.x, 1 - texCoord.y, layer));\n"
     "}\n"
     ;
 

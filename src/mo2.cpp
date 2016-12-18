@@ -13,6 +13,7 @@ GLFWwindow* window;
 static const int width = 640;
 static const int height = 480;
 
+
 void initOpenGL() {
   glfwInit();
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -22,12 +23,26 @@ void initOpenGL() {
   window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
   glfwMakeContextCurrent(window);
 
+  glfwSetKeyCallback(window, keyCallback);
+
   gl3wInit();
 }
 
 void terminateOpenGL() {
   glfwDestroyWindow(window);
   glfwTerminate();
+}
+
+void keyCallback(GLFWwindow* window, int key, int,
+    int action, int) {
+  if (action == GLFW_PRESS) {
+    switch (key) {
+      case(GLFW_KEY_ESCAPE):
+      case(GLFW_KEY_Q):
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+        break;
+    }
+  }
 }
 
 }
@@ -48,7 +63,7 @@ int main(int argn, const char *argv[]) {
   renderer.setTileImages(mosaic.getTiles());
 
   glViewport(0, 0, width, height);
-  for (int i = 0; ; ++i) {
+  while (!glfwWindowShouldClose(window)) {
     renderer.render();
     glfwSwapBuffers(window);
     glfwPollEvents();
