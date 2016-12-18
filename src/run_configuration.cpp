@@ -10,7 +10,8 @@ std::string RunConfiguration::usage() const {
   "-t targetImageName :  File name of image used for mosaic target.\n"
   "-o outputImageName :  Output file name.\n"
   "-w mosaic width    :  Width of mosaic produced.\n"
-  "-h mosaic height   :  Height of mosaic produced.\n";
+  "-h mosaic height   :  Height of mosaic produced.\n"
+  "-n numIter         :  Number of iterations.\n";
 }
 
 template <typename T>
@@ -50,6 +51,7 @@ void parseOption(bool required, int argn, const char *argv[], int *used,
 RunConfiguration::RunConfiguration(int n, const char *argv[]) {
   targetWidth_ = -1;
   targetHeight_ = -1;
+  numIter_ = -1;
 
   if (n < 1) {
     throw std::runtime_error("Invalid command line arguments.");
@@ -60,6 +62,7 @@ RunConfiguration::RunConfiguration(int n, const char *argv[]) {
   parseOption(false, n, argv, &used[0], "-o", &outputImageName_);
   parseOption(false, n, argv, &used[0], "-w", &targetWidth_);
   parseOption(false, n, argv, &used[0], "-h", &targetHeight_);
+  parseOption(false, n, argv, &used[0], "-n", &numIter_);
 
   // Done parsing options, now obtain the tile file names.
   for (int i = 1; i != n; ++i) {
@@ -96,6 +99,18 @@ std::string* RunConfiguration::targetImageName() {
 
 std::string* RunConfiguration::outputImageName() {
   return &outputImageName_;
+}
+
+int RunConfiguration::getTargetWidth() const {
+  return targetWidth_;
+}
+
+int RunConfiguration::getTargetHeight() const {
+  return targetHeight_;
+}
+
+int RunConfiguration::getNumIter() const {
+  return numIter_;
 }
 
 }

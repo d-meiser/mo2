@@ -19,11 +19,13 @@ public:
   std::string* tileEnd();
   int getTargetWidth() const;
   int getTargetHeight() const;
+  int getNumIter() const;
   std::string usage() const;
 
 private:
   int targetWidth_;
   int targetHeight_;
+  int numIter_;
   std::string targetImageName_;
   std::string outputImageName_;
   std::vector<std::string> tiles_;

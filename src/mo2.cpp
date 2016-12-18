@@ -68,7 +68,9 @@ int main(int argn, const char *argv[]) {
 
   auto start = std::chrono::system_clock::now();
   long frame = 0;
-  while (!glfwWindowShouldClose(window)) {
+  int numIter = config.getNumIter();
+  while (!glfwWindowShouldClose(window) &&
+    (numIter < 0 || frame < numIter)) {
     renderer.render();
 
     glfwSwapBuffers(window);
