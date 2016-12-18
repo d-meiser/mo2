@@ -16,6 +16,20 @@ Mosaic::Mosaic(
         tiles_.push_back(Tile{0, 0, 0, 1.0f,
                               std::unique_ptr<Image>(new Image(tileName))});
       });
+
+  float area = 0.0f;
+  for (const auto& t :tiles_) {
+    area += t.width() * t.height();
+  }
+
+  float targetArea =
+      scale * scale * targetImage_.width() * targetImage_.height();
+
+  float tileScale = std::sqrt(targetArea / area);
+
+  for (auto& t :tiles_) {
+    t.scale_ = tileScale;
+  }
 }
 
 Mosaic::Mosaic(
