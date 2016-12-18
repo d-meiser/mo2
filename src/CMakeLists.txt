@@ -19,6 +19,7 @@ add_library(mo_lib
     mosaic.cpp
     mosaic_renderer_outline.cpp
     mosaic_renderer_textured.cpp
+    mosaic_match.cpp
     renderer.cpp
     run_configuration.cpp
     tile.cpp
@@ -36,6 +37,7 @@ endif()
 
 add_test(mo2 mo2
     -t ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
+    -n 3
     ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
     ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
     )
