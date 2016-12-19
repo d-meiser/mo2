@@ -8,11 +8,12 @@
 
 namespace Mo {
 
-class Renderer;
+class MosaicRenderer;
 
 class MO_LIB_EXPORT MosaicMatch : public Badness {
   public:
-    MosaicMatch(std::shared_ptr<Renderer> renderer);
+    MosaicMatch(std::shared_ptr<MosaicRenderer> renderer);
+    ~MosaicMatch();
     virtual float computeBadness(const Mosaic &model,
         const TargetImage &targetImage);
 
