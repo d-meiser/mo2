@@ -35,10 +35,12 @@ if(UNIX)
   target_link_libraries(mo2 dl)
 endif()
 
-add_test(mo2 mo2
-    -t ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
-    -n 3
-    ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
-    ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
-    )
+if (MO_ENABLE_OPENGL_TESTS AND NOT MO_WITH_ADDRESS_SANITIZER)
+  add_test(mo2 mo2
+      -t ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
+      -n 3
+      ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
+      ${PROJECT_SOURCE_DIR}/tests/test_files/test_image_1.jpg
+      )
+endif ()
 
