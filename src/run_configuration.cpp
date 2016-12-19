@@ -31,8 +31,12 @@ void getValue(const char* option, int* value) {
 template<typename T>
 void parseOption(bool required, int argn, const char *argv[], int *used,
                  const std::string& option, T* value) {
+  if (required && argn < 2) {
+    throw std::runtime_error(
+        "Too few arguments when parsing required argument.");
+  }
   int i;
-  for (i = 1; i != argn; ++i) {
+  for (i = 1; i != argn - 1; ++i) {
     if (!used[i] && !used[i + 1] && std::string(argv[i]) == option) {
       if (i == argn - 1) {
         throw std::runtime_error("Invalid option.");
