@@ -13,7 +13,7 @@ class Mosaic;
 
 class MO_LIB_EXPORT MosaicRenderer : public Renderer {
 public:
-  virtual void setMosaic(Mosaic* mosaic) = 0;
+  virtual void setMosaic(const Mosaic& mosaic) = 0;
   virtual void setTileImages(const std::vector<Tile>& tiles) = 0;
 };
 

@@ -13,7 +13,7 @@ class MO_LIB_EXPORT MosaicRendererOutline : public MosaicRenderer {
 public:
   MosaicRendererOutline();
   ~MosaicRendererOutline();
-  void setMosaic(Mosaic* mosaic) override;
+  void setMosaic(const Mosaic& mosaic) override;
   void setTileImages(const std::vector<Tile>& tiles) override;
 
 private:

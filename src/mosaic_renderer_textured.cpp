@@ -115,9 +115,9 @@ MosaicRendererTextured::~MosaicRendererTextured() {
   }
 }
 
-void MosaicRendererTextured::setMosaic(Mosaic* mosaic) {
-  tiles_.resize(mosaic->size());
-  std::transform(mosaic->cTilesBegin(), mosaic->cTilesEnd(),
+void MosaicRendererTextured::setMosaic(const Mosaic& mosaic) {
+  tiles_.resize(mosaic.size());
+  std::transform(mosaic.cTilesBegin(), mosaic.cTilesEnd(),
       tiles_.begin(),
       [](const Tile& t) {
         return MyTile{t.x_, t.y_, t.angle_, t.width(), t.height()};
@@ -131,7 +131,9 @@ void MosaicRendererTextured::setTileImages(const std::vector<Tile>& tiles) {
   }
   MO_CHECK_GL_ERROR;
   glBindTexture(GL_TEXTURE_2D_ARRAY, tileTextures_);
+  MO_CHECK_GL_ERROR;
   findTileSize(tiles, &width_, &height_);
+  MO_CHECK_GL_ERROR;
   glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA8, width_, height_, tiles.size());
   MO_CHECK_GL_ERROR;
 

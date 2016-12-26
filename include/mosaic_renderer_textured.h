@@ -14,7 +14,7 @@ class MO_LIB_EXPORT MosaicRendererTextured : public MosaicRenderer {
 public:
   MosaicRendererTextured();
   ~MosaicRendererTextured();
-  void setMosaic(Mosaic* mosaic) override;
+  void setMosaic(const Mosaic& mosaic) override;
   void setTileImages(const std::vector<Tile>& tiles) override;
 
 private:

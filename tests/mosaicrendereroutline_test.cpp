@@ -57,7 +57,7 @@ TEST_F(MosaicRendererOutline, ConstructorTest) {
 
 TEST_F(MosaicRendererOutline, CanRender) {
   Mo::MosaicRendererOutline renderer;
-  renderer.setMosaic(&mosaic);
+  renderer.setMosaic(mosaic);
 
   float red = 0.1f;
   float green = 0.2f;

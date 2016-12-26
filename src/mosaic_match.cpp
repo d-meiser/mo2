@@ -1,21 +1,29 @@
 #include <mosaic_match.h>
 #include <utilities.h>
+#include <framebuffer.h>
+#include <mosaic_renderer.h>
+#include <mosaic.h>
 
 
 namespace Mo {
 
 class MosaicMatch::Impl : public Badness {
   public:
-    Impl(std::shared_ptr<MosaicRenderer> renderer) {
-      MO_UNUSED(renderer);
+    Impl(std::shared_ptr<MosaicRenderer> renderer) :
+      renderer_(renderer) {
     }
 
-    virtual float computeBadness(const Mosaic &model,
-        const TargetImage &targetImage) {
-      MO_UNUSED(model);
+    float computeBadness(const Mosaic &model,
+        const TargetImage &targetImage) override {
       MO_UNUSED(targetImage);
+      renderer_->setMosaic(model);
+      renderer_->setTileImages(model.getTiles());
       return 0.0f;
     }
+
+  private:
+    std::shared_ptr<MosaicRenderer> renderer_;
+    std::unique_ptr<Framebuffer> framebuffer_;
 };
 
 MosaicMatch::MosaicMatch(std::shared_ptr<MosaicRenderer> renderer) :
@@ -25,11 +33,8 @@ MosaicMatch::~MosaicMatch() {}
 
 float MosaicMatch::computeBadness(const Mosaic& model,
     const TargetImage &targetImage) {
-  MO_UNUSED(model);
-  MO_UNUSED(targetImage);
-  return 0.0f;
+  return impl_->computeBadness(model, targetImage);
 }
-
 
 }
 

@@ -61,7 +61,7 @@ int main(int argn, const char *argv[]) {
       config.tileEnd()};
 
   Mo::MosaicRendererTextured renderer;
-  renderer.setMosaic(&mosaic);
+  renderer.setMosaic(mosaic);
   renderer.setTileImages(mosaic.getTiles());
 
   glViewport(0, 0, width, height);

@@ -85,9 +85,9 @@ MosaicRendererOutline::~MosaicRendererOutline() {
   }
 }
 
-void MosaicRendererOutline::setMosaic(Mosaic* mosaic) {
-  tiles_.resize(mosaic->size());
-  std::transform(mosaic->cTilesBegin(), mosaic->cTilesEnd(),
+void MosaicRendererOutline::setMosaic(const Mosaic& mosaic) {
+  tiles_.resize(mosaic.size());
+  std::transform(mosaic.cTilesBegin(), mosaic.cTilesEnd(),
       tiles_.begin(),
       [](const Tile& t) {
         return MyTile{t.x_, t.y_, t.angle_, t.width(), t.height()};

@@ -70,7 +70,7 @@ struct MosaicMatch_F : public MosaicRendererTextured {
 
   void SetUp() override {
     MosaicRendererTextured::SetUp();
-    renderer_->setMosaic(&mosaic);
+    renderer_->setMosaic(mosaic);
     renderer_->setTileImages(mosaic.getTiles());
   }
 
@@ -87,6 +87,13 @@ struct MosaicMatch_F : public MosaicRendererTextured {
 
 TEST_F(MosaicMatch_F, Constructor) {
   Mo::MosaicMatch match{renderer_};
+}
+
+TEST_F(MosaicMatch_F, HasSmallBadnessForGoodMatch) {
+  Mo::MosaicMatch match{renderer_};
+  mosaic.reduceSize(1);
+  Mo::TargetImage targetImage{*mosaic.cTilesBegin()->image_, 1.0f};
+  EXPECT_LT(match.computeBadness(mosaic, targetImage), 1.0);
 }
 
 
@@ -109,6 +116,7 @@ int main(int argn, char* argv[]) {
 
   glfwDestroyWindow(window);
   glfwTerminate();
+
   return result;
 }
 
