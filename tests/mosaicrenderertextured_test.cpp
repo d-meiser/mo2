@@ -101,6 +101,13 @@ TEST_F(MosaicRendererTextured, CanRender) {
   EXPECT_LT(master.distance(image), 5.0e-2f);
 }
 
+TEST_F(MosaicRendererTextured, CanSetTilesTwice) {
+  Mo::MosaicRendererTextured renderer;
+  renderer.setMosaic(mosaic);
+  renderer.setTileImages(mosaic.getTiles());
+  renderer.setTileImages(mosaic.getTiles());
+}
+
 int main(int argn, char* argv[]) {
   ::testing::InitGoogleTest(&argn, argv);
 
