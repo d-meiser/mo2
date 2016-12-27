@@ -15,6 +15,8 @@ public:
   void bind();
   size_t size() const;
   void getPixels(unsigned char* data);
+  int width() const;
+  int height() const;
 
 private:
   GLuint fbo_;

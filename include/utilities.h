@@ -4,6 +4,7 @@
 #include <GL/gl3w.h>
 #include <sstream>
 #include <stdexcept>
+#include <cassert>
 
 
 #define MO_UNUSED(x) (void)(x)
@@ -21,5 +22,6 @@ static inline void moCheckGlError(const char* file, int line) {
 
 #define MO_CHECK_GL_ERROR moCheckGlError(__FILE__, __LINE__)
 
+#define MO_ASSERT(x) assert((x))
 #endif
 

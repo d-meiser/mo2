@@ -7,6 +7,16 @@
 
 namespace Mo {
 
+namespace {
+
+template<typename T>
+float sqr_difference(T a, T b) {
+  float tmp = static_cast<float>(a) - static_cast<float>(b);
+  return tmp * tmp;
+}
+
+}
+
 class MosaicMatch::Impl : public Badness {
   public:
     Impl(std::shared_ptr<MosaicRenderer> renderer) :
@@ -15,10 +25,32 @@ class MosaicMatch::Impl : public Badness {
 
     float computeBadness(const Mosaic &model,
         const TargetImage &targetImage) override {
-      MO_UNUSED(targetImage);
+      // Make sure framebuffer has right size
+      if (!framebuffer_ ||
+          targetImage.width() != framebuffer_->width() ||
+          targetImage.height() != framebuffer_->height()) {
+        framebuffer_.reset(
+            new Framebuffer(targetImage.width(),
+                            targetImage.height()));
+      }
+
       renderer_->setMosaic(model);
       renderer_->setTileImages(model.getTiles());
-      return 0.0f;
+      framebuffer_->bind();
+      renderer_->render();
+
+      MO_ASSERT(framebuffer_->size() > 0);
+      std::vector<unsigned char> pixels(framebuffer_->size());
+      framebuffer_->getPixels(&pixels[0]);
+      int n = targetImage.width() * targetImage.height() * 3;
+      const unsigned char* targetPixels =
+          targetImage.image().getConstPixelData();
+      float err = 0.0f;
+      for (int i = 0; i < n; ++i) {
+        err += sqr_difference(targetPixels[i], pixels[i]);
+      }
+
+      return err;
     }
 
   private:

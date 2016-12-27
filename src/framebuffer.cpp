@@ -76,4 +76,12 @@ void Framebuffer::getPixels(unsigned char* data) {
   MO_CHECK_GL_ERROR;
 }
 
+int Framebuffer::width() const {
+  return width_;
+}
+
+int Framebuffer::height() const {
+  return height_;
+}
+
 }
