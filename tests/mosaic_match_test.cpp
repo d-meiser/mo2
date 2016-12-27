@@ -96,6 +96,23 @@ TEST_F(MosaicMatch_F, HasSmallBadnessForGoodMatch) {
   EXPECT_LT(match.computeBadness(mosaic, targetImage), 1.0);
 }
 
+TEST_F(MosaicMatch_F, BadnessIsLargerIfColorIsWrong) {
+  Mo::MosaicMatch match{renderer_};
+  mosaic.reduceSize(1);
+  Mo::TargetImage targetImage{*mosaic.cTilesBegin()->image_, 1.0f};
+  float smallBadness = match.computeBadness(mosaic, targetImage);
+  Mo::Image* img = mosaic.tilesBegin()->image_.get();
+  unsigned char* pixels = img->getPixelData();
+  int width = img->width();
+  for (int i = 0; i < img->height(); ++i) {
+    for (int j = 0; j < img->width(); ++j) {
+      pixels[(i * width + j) * 3 + 0] = 0;
+    }
+  }
+  float largerBadness = match.computeBadness(mosaic, targetImage);
+  EXPECT_GT(largerBadness, smallBadness);
+}
+
 
 int main(int argn, char* argv[]) {
   ::testing::InitGoogleTest(&argn, argv);
