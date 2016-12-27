@@ -17,14 +17,16 @@ Image::Image(const std::string& filename) : quality_(90) {
   readJpegFile(filename.c_str());
 }
 
-Image::Image(int width, int height) :
-  width_(width), height_(height), pitch_(3 * width), numComponents_(3),
+Image::Image(int width, int height, int numComponents) :
+  width_(width), height_(height),
+  pitch_(numComponents * width),
+  numComponents_(numComponents),
   quality_(90), pixelData_(pitch_ * height_) {
 }
 
 Image::~Image() {}
 
-void Image::save(const std::string& filename) {
+void Image::save(const std::string& filename) const {
   saveJpegFile(filename.c_str());
 }
 
@@ -141,16 +143,15 @@ bool Image::operator==(const Image& rhs) const {
 }
 
 float Image::distance(const Image& other) const {
-  assert(numComponents_ == other.numComponents_);
   assert(width_ == other.width_);
   assert(height_ == other.height_);
   double l1Difference = 0;
   for (int i = 0; i != height_; ++i) {
     for (int j = 0; j != width_; ++j) {
-      for (int k = 0; k < numComponents_; ++k) {
+      for (int k = 0; k < 3; ++k) {
         int difference =
           (int)pixelData_[(i * width_ + j) * numComponents_ + k] - 
-          (int)other.pixelData_[(i * width_ + j) * numComponents_ + k];
+          (int)other.pixelData_[(i * width_ + j) * other.numComponents_ + k];
         l1Difference += std::abs(difference);
       }
     }
@@ -199,7 +200,7 @@ void Image::readJpegFile(const char *filename) {
   fclose(infile);
 }
 
-void Image::saveJpegFile(const char *filename) {
+void Image::saveJpegFile(const char *filename) const {
   struct jpeg_compress_struct cinfo;
   struct jpeg_error_mgr jerr;
 
@@ -216,15 +217,22 @@ void Image::saveJpegFile(const char *filename) {
   cinfo.image_width = width_;
   cinfo.image_height = height_;
   cinfo.input_components = numComponents_;
-  cinfo.in_color_space = JCS_RGB;
+  if (numComponents_ == 3) {
+    cinfo.in_color_space = JCS_RGB;
+  } else if (numComponents_ == 4) {
+    cinfo.in_color_space = JCS_EXT_RGBX;
+  } else {
+    throw std::runtime_error(
+        "Can only deal with 3 and 4 component color spaces.");
+  }
 
   jpeg_set_defaults(&cinfo);
   cinfo.dct_method = JDCT_FLOAT;
   jpeg_set_quality(&cinfo, quality_, TRUE);
   jpeg_start_compress( &cinfo, TRUE );
   while (cinfo.next_scanline < cinfo.image_height) {
-    row_pointer[0] = &pixelData_[cinfo.next_scanline *
-      cinfo.image_width * cinfo.input_components];
+    row_pointer[0] = const_cast<JSAMPROW>(&pixelData_[cinfo.next_scanline *
+      cinfo.image_width * cinfo.input_components]);
     jpeg_write_scanlines(&cinfo, row_pointer, 1);
   }
   jpeg_finish_compress(&cinfo);

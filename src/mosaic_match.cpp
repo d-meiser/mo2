@@ -3,6 +3,7 @@
 #include <framebuffer.h>
 #include <mosaic_renderer.h>
 #include <mosaic.h>
+#include <iostream>
 
 
 namespace Mo {
@@ -40,17 +41,11 @@ class MosaicMatch::Impl : public Badness {
       renderer_->render();
 
       MO_ASSERT(framebuffer_->size() > 0);
-      std::vector<unsigned char> pixels(framebuffer_->size());
-      framebuffer_->getPixels(&pixels[0]);
-      int n = targetImage.width() * targetImage.height() * 3;
-      const unsigned char* targetPixels =
-          targetImage.image().getConstPixelData();
-      float err = 0.0f;
-      for (int i = 0; i < n; ++i) {
-        err += sqr_difference(targetPixels[i], pixels[i]);
-      }
+      Image renderedImage(targetImage.width(), targetImage.height(), 4);
+      framebuffer_->getPixels(renderedImage.getPixelData());
+      renderedImage.save("renderedImage.jpg");
 
-      return err;
+      return renderedImage.distance(targetImage.image());
     }
 
   private:

@@ -16,9 +16,9 @@ public:
   typedef uint8_t Byte;
 
   Image(const std::string& filename);
-  Image(int width, int height);
+  Image(int width, int height, int numComponents = 3);
   ~Image();
-  void save(const std::string& filename);
+  void save(const std::string& filename) const;
   unsigned char *getPixelData();
   const unsigned char *getConstPixelData() const;
   int width() const;
@@ -41,7 +41,7 @@ private:
   std::vector<Byte> pixelData_;
 
   void readJpegFile(const char *filename);
-  void saveJpegFile(const char *filename);
+  void saveJpegFile(const char *filename) const;
 };
 
 }

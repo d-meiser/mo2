@@ -93,6 +93,7 @@ TEST_F(MosaicMatch_F, HasSmallBadnessForGoodMatch) {
   Mo::MosaicMatch match{renderer_};
   mosaic.reduceSize(1);
   Mo::TargetImage targetImage{*mosaic.cTilesBegin()->image_, 1.0f};
+  targetImage.image().save("targetImage.jpg");
   EXPECT_LT(match.computeBadness(mosaic, targetImage), 1.0);
 }
 

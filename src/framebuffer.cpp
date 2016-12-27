@@ -72,6 +72,7 @@ void Framebuffer::bind() {
 
 void Framebuffer::getPixels(unsigned char* data) {
   bind();
+  // TODO: Figure out how to read just RGB components.
   glReadPixels(0, 0, width_, height_, GL_RGBA, GL_UNSIGNED_BYTE, data);
   MO_CHECK_GL_ERROR;
 }
