@@ -5,11 +5,10 @@ namespace Mo {
 
 BadnessComposite::~BadnessComposite() {}
 
-float BadnessComposite::computeBadness(
-        const Mosaic &model, const TargetImage &targetImage) {
+float BadnessComposite::computeBadness(const Mosaic &model) {
     float badness = 0.0f;
     for (auto& b : badnesses_) {
-        badness += b->computeBadness(model, targetImage);
+        badness += b->computeBadness(model);
     }
     return badness;
 }

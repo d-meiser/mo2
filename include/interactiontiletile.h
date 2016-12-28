@@ -15,8 +15,7 @@ class Potential;
 class MO_LIB_EXPORT InteractionTileTile : public Badness {
 public:
     InteractionTileTile(std::unique_ptr<Potential> potential);
-    virtual float computeBadness(const Mosaic &model,
-        const TargetImage &targetImage);
+    virtual float computeBadness(const Mosaic &model);
     void resetPotential(std::unique_ptr<Potential> potential);
 private:
     std::unique_ptr<Potential> potential_;

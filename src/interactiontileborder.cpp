@@ -16,7 +16,7 @@ InteractionTileBorder::InteractionTileBorder(
 }
 
 float InteractionTileBorder::computeBadness(
-    const Mosaic &mosaic, const TargetImage &targetImage) {
+    const Mosaic &mosaic) {
   // Number of effective tiles used to simulate interaction with border
   int numTilesLinear = static_cast<int>(
       std::round(std::sqrt(static_cast<float>(mosaic.size()))));
@@ -24,6 +24,8 @@ float InteractionTileBorder::computeBadness(
   numTilesLinear = std::max(minimumNumTiles, numTilesLinear);
 
   float badness = 0.0;
+
+  const auto& targetImage = mosaic.targetImage();
 
   // bottom row of fake tiles
   float width0 = static_cast<float>(targetImage.width()) / numTilesLinear;

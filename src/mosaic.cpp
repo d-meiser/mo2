@@ -73,6 +73,10 @@ const TargetImage& Mosaic::targetImage() const {
   return targetImage_;
 }
 
+void Mosaic::setTargetImage(const TargetImage& img) {
+  targetImage_ = img;
+}
+
 void Mosaic::addTiles(const Tile* tileBegin, const Tile* tileEnd) {
   for (const Tile* t = tileBegin; t != tileEnd; ++t) {
     tiles_.emplace_back(Tile{t->x_, t->y_, t->angle_, t->scale_,

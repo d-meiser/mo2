@@ -11,9 +11,7 @@ InteractionTileTile::InteractionTileTile(
     std::unique_ptr<Potential> potential) : potential_(std::move(potential)) {
 }
 
-float InteractionTileTile::computeBadness(
-    const Mosaic &model, const TargetImage &targetImage) {
-  MO_UNUSED(targetImage);
+float InteractionTileTile::computeBadness(const Mosaic &model) {
 
   float badness = 0.0f;
   auto begin = model.cTilesBegin();

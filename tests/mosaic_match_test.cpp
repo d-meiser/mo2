@@ -92,16 +92,26 @@ TEST_F(MosaicMatch_F, Constructor) {
 TEST_F(MosaicMatch_F, HasSmallBadnessForGoodMatch) {
   Mo::MosaicMatch match{renderer_};
   mosaic.reduceSize(1);
+  auto& t = *mosaic.tilesBegin();
+  t.x_ = 0.0f;
+  t.y_ = 0.0f;
+  t.angle_ = 0.0f;
+  t.scale_ = 3.0f;
   Mo::TargetImage targetImage{*mosaic.cTilesBegin()->image_, 1.0f};
   targetImage.image().save("targetImage.jpg");
-  EXPECT_LT(match.computeBadness(mosaic, targetImage), 1.0);
+  EXPECT_LT(match.computeBadness(mosaic), 5.0e-2f);
 }
 
 TEST_F(MosaicMatch_F, BadnessIsLargerIfColorIsWrong) {
   Mo::MosaicMatch match{renderer_};
   mosaic.reduceSize(1);
+  auto& t = *mosaic.tilesBegin();
+  t.x_ = 0.0f;
+  t.y_ = 0.0f;
+  t.angle_ = 0.0f;
+  t.scale_ = 1.0f;
   Mo::TargetImage targetImage{*mosaic.cTilesBegin()->image_, 1.0f};
-  float smallBadness = match.computeBadness(mosaic, targetImage);
+  float smallBadness = match.computeBadness(mosaic);
   Mo::Image* img = mosaic.tilesBegin()->image_.get();
   unsigned char* pixels = img->getPixelData();
   int width = img->width();
@@ -110,7 +120,7 @@ TEST_F(MosaicMatch_F, BadnessIsLargerIfColorIsWrong) {
       pixels[(i * width + j) * 3 + 0] = 0;
     }
   }
-  float largerBadness = match.computeBadness(mosaic, targetImage);
+  float largerBadness = match.computeBadness(mosaic);
   EXPECT_GT(largerBadness, smallBadness);
 }
 

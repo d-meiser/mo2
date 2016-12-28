@@ -25,6 +25,7 @@ public:
   std::vector<Tile>::const_iterator cTilesBegin() const;
   std::vector<Tile>::const_iterator cTilesEnd() const;
   const TargetImage& targetImage() const;
+  void setTargetImage(const TargetImage& img);
   void addTiles(const Tile* tileBegin, const Tile* tileEnd);
   void clear();
   void reduceSize(size_t newSize);

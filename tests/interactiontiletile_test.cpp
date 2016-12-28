@@ -56,25 +56,25 @@ struct InteractionTileTileIdentity : public ::testing::Test {
 
 
 TEST_F(InteractionTileTileIdentity, CanComputeBadness) {
-    EXPECT_NO_THROW(interaction.computeBadness(mosaic, targetImage));
+    EXPECT_NO_THROW(interaction.computeBadness(mosaic));
 }
 
 TEST_F(InteractionTileTileIdentity, UnitScaleTilesGiveBadnessOfOne) {
-    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
+    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic), 1.0e-5f);
 }
 
 TEST_F(InteractionTileTileIdentity, ThreeTilesGiveThreeTimesAsMuchBadness) {
     int numTiles = 3;
     mosaic.clear();
     createSomeModel(numTiles);
-    EXPECT_NEAR(3.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
+    EXPECT_NEAR(3.0f, interaction.computeBadness(mosaic), 1.0e-5f);
 }
 
 TEST_F(InteractionTileTileIdentity, FourTilesGiveSixTimesAsMuchBadness) {
     int numTiles = 4;
     mosaic.clear();
     createSomeModel(numTiles);
-    EXPECT_NEAR(6.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
+    EXPECT_NEAR(6.0f, interaction.computeBadness(mosaic), 1.0e-5f);
 }
 
 class IdentityPotentialFiniteRange : public IdentityPotential {
@@ -97,7 +97,7 @@ TEST_F(InteractionTileTileIdentity, FiniteRangeInRange) {
     ++tile;
     tile->x_ = 0.0f;
     tile->y_ = 0.2f;
-    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
+    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic), 1.0e-5f);
 }
 
 TEST_F(InteractionTileTileIdentity, FiniteRangeMarginal) {
@@ -123,7 +123,7 @@ TEST_F(InteractionTileTileIdentity, FiniteRangeMarginal) {
     tile->x_ = cos(alpha) * distance;
     tile->y_ = -sin(alpha) * distance;
 
-    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
+    EXPECT_NEAR(1.0f, interaction.computeBadness(mosaic), 1.0e-5f);
 }
 
 TEST_F(InteractionTileTileIdentity, FiniteRangeOutOfRange) {
@@ -149,6 +149,6 @@ TEST_F(InteractionTileTileIdentity, FiniteRangeOutOfRange) {
     tile->x_ = cos(alpha) * distance;
     tile->y_ = -sin(alpha) * distance;
 
-    EXPECT_NEAR(0.0f, interaction.computeBadness(mosaic, targetImage), 1.0e-5f);
+    EXPECT_NEAR(0.0f, interaction.computeBadness(mosaic), 1.0e-5f);
 }
 

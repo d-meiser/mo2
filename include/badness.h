@@ -15,11 +15,9 @@ public:
     /**
      * @brief Calculate the badness of a mosaic
      * @param model the model
-     * @param targetImage the image to be fit by the model
      * @return the badness of the mosaic
      */
-    virtual float computeBadness(const Mosaic& mosaic,
-                                 const TargetImage& targetImage) = 0;
+    virtual float computeBadness(const Mosaic& mosaic) = 0;
 };
 
 }

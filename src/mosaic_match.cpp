@@ -24,16 +24,8 @@ class MosaicMatch::Impl : public Badness {
       renderer_(renderer) {
     }
 
-    float computeBadness(const Mosaic &model,
-        const TargetImage &targetImage) override {
-      // Make sure framebuffer has right size
-      if (!framebuffer_ ||
-          targetImage.width() != framebuffer_->width() ||
-          targetImage.height() != framebuffer_->height()) {
-        framebuffer_.reset(
-            new Framebuffer(targetImage.width(),
-                            targetImage.height()));
-      }
+    float computeBadness(const Mosaic &model) override {
+      ensureFrameBufferSizeIsCorrect(model.targetImage());
 
       renderer_->setMosaic(model);
       renderer_->setTileImages(model.getTiles());
@@ -41,8 +33,10 @@ class MosaicMatch::Impl : public Badness {
       renderer_->render();
 
       MO_ASSERT(framebuffer_->size() > 0);
+      const auto& targetImage = model.targetImage();
       Image renderedImage(targetImage.width(), targetImage.height(), 4);
       framebuffer_->getPixels(renderedImage.getPixelData());
+      renderedImage.setQuality(100);
       renderedImage.save("renderedImage.jpg");
 
       return renderedImage.distance(targetImage.image());
@@ -51,6 +45,16 @@ class MosaicMatch::Impl : public Badness {
   private:
     std::shared_ptr<MosaicRenderer> renderer_;
     std::unique_ptr<Framebuffer> framebuffer_;
+
+    void ensureFrameBufferSizeIsCorrect(const TargetImage& targetImage) {
+      if (!framebuffer_ ||
+          targetImage.width() != framebuffer_->width() ||
+          targetImage.height() != framebuffer_->height()) {
+        framebuffer_.reset(
+            new Framebuffer(targetImage.width(),
+                            targetImage.height()));
+      }
+    }
 };
 
 MosaicMatch::MosaicMatch(std::shared_ptr<MosaicRenderer> renderer) :
@@ -58,9 +62,8 @@ MosaicMatch::MosaicMatch(std::shared_ptr<MosaicRenderer> renderer) :
 
 MosaicMatch::~MosaicMatch() {}
 
-float MosaicMatch::computeBadness(const Mosaic& model,
-    const TargetImage &targetImage) {
-  return impl_->computeBadness(model, targetImage);
+float MosaicMatch::computeBadness(const Mosaic& model) {
+  return impl_->computeBadness(model);
 }
 
 }

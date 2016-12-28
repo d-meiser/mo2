@@ -14,8 +14,7 @@ namespace Mo {
 class MO_LIB_EXPORT BadnessComposite : public Badness {
 public:
     virtual ~BadnessComposite();
-    virtual float computeBadness(
-            const Mosaic &model, const TargetImage &targetImage);
+    virtual float computeBadness(const Mosaic &model);
     void addBadness(std::unique_ptr<Badness> badness);
 
 private:

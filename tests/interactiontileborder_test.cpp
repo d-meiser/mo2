@@ -31,8 +31,7 @@ struct InteractionTileBorderIdentity : public ::testing::Test {
   InteractionTileBorderIdentity() :
     interaction(std::unique_ptr<Potential>(
           new IdentityPotentialFiniteRange(-1.0f))),
-    mosaic(Image(150, 100), 1.4f),
-    targetImage(mosaic.targetImage())
+    mosaic(Image(150, 100), 1.4f)
   {}
   virtual void SetUp() {
     createSomeModel(2);
@@ -48,14 +47,13 @@ struct InteractionTileBorderIdentity : public ::testing::Test {
   }
   InteractionTileBorder interaction;
   Mosaic mosaic;
-  TargetImage targetImage;
 };
 
 
 TEST_F(InteractionTileBorderIdentity, InRangeBottomLeft) {
   float width = 3000.0f;
   float height = 2000.0f;
-  targetImage = TargetImage(Image(width, height), 1.0f);
+  mosaic.setTargetImage(TargetImage(Image(width, height), 1.0f));
   float range = 100.f;
   interaction.resetPotential(
       std::unique_ptr<Potential>(
@@ -67,13 +65,13 @@ TEST_F(InteractionTileBorderIdentity, InRangeBottomLeft) {
   ++tile;
   tile->x_ = -0.5f * width + 10.0f;
   tile->y_ = -0.5f * height + 10.0f;
-  EXPECT_NE(0.0f, interaction.computeBadness(mosaic, targetImage));
+  EXPECT_NE(0.0f, interaction.computeBadness(mosaic));
 }
 
 TEST_F(InteractionTileBorderIdentity, InRangeBottomRight) {
   float width = 3000.0f;
   float height = 2000.0f;
-  targetImage = TargetImage(Image(width, height), 1.0f);
+  mosaic.setTargetImage(TargetImage(Image(width, height), 1.0f));
   float range = 100.f;
   interaction.resetPotential(
       std::unique_ptr<Potential>(
@@ -85,13 +83,13 @@ TEST_F(InteractionTileBorderIdentity, InRangeBottomRight) {
   ++tile;
   tile->x_ = 0.5f * width - 50.0f;
   tile->y_ = -0.5f * height + 30.0f;
-  EXPECT_NE(0.0f, interaction.computeBadness(mosaic, targetImage));
+  EXPECT_NE(0.0f, interaction.computeBadness(mosaic));
 }
 
 TEST_F(InteractionTileBorderIdentity, InRangeTopRight) {
   float width = 3000.0f;
   float height = 2000.0f;
-  targetImage = TargetImage(Image(width, height), 1.0f);
+  mosaic.setTargetImage(TargetImage(Image(width, height), 1.0f));
   float range = 100.f;
   interaction.resetPotential(
       std::unique_ptr<Potential>(
@@ -103,14 +101,14 @@ TEST_F(InteractionTileBorderIdentity, InRangeTopRight) {
   ++tile;
   tile->x_ = 0.5f * width - 50.0f;
   tile->y_ = 0.5f * height - 30.0f;
-  EXPECT_NE(0.0f, interaction.computeBadness(mosaic, targetImage));
+  EXPECT_NE(0.0f, interaction.computeBadness(mosaic));
 }
 
 
 TEST_F(InteractionTileBorderIdentity, InRangeTopLeft) {
   float width = 3000.0f;
   float height = 2000.0f;
-  targetImage = TargetImage(Image(width, height), 1.0f);
+  mosaic.setTargetImage(TargetImage(Image(width, height), 1.0f));
   float range = 100.f;
   interaction.resetPotential(
       std::unique_ptr<Potential>(
@@ -122,13 +120,13 @@ TEST_F(InteractionTileBorderIdentity, InRangeTopLeft) {
   ++tile;
   tile->x_ = -0.5f * width + 50.0f;
   tile->y_ = 0.5f * height - 30.0f;
-  EXPECT_NE(0.0f, interaction.computeBadness(mosaic, targetImage));
+  EXPECT_NE(0.0f, interaction.computeBadness(mosaic));
 }
 
 TEST_F(InteractionTileBorderIdentity, OutOfRange) {
   float width = 3000.0f;
   float height = 2000.0f;
-  targetImage = TargetImage(Image(width, height), 1.0f);
+  mosaic.setTargetImage(TargetImage(Image(width, height), 1.0f));
   float range = 100.f;
   interaction.resetPotential(
       std::unique_ptr<Potential>(
@@ -140,13 +138,13 @@ TEST_F(InteractionTileBorderIdentity, OutOfRange) {
   ++tile;
   tile->x_ = 0.0f;
   tile->y_ = 0.0f;
-  EXPECT_EQ(0.0f, interaction.computeBadness(mosaic, targetImage));
+  EXPECT_EQ(0.0f, interaction.computeBadness(mosaic));
 }
 
 TEST_F(InteractionTileBorderIdentity, TwoTilesTwiceAsBadAsOne) {
   float width = 3000.0f;
   float height = 2000.0f;
-  targetImage = TargetImage(Image(width, height), 1.0f);
+  mosaic.setTargetImage(TargetImage(Image(width, height), 1.0f));
   float range = 100.f;
   interaction.resetPotential(
       std::unique_ptr<Potential>(
@@ -163,11 +161,11 @@ TEST_F(InteractionTileBorderIdentity, TwoTilesTwiceAsBadAsOne) {
   tile->x_ = -0.5f * width + 10.0f;
   tile->y_ = -0.5f * height + 10.0f;
 
-  float badnessTwoTiles = interaction.computeBadness(mosaic, targetImage);
+  float badnessTwoTiles = interaction.computeBadness(mosaic);
 
   mosaic.reduceSize(1);
   ASSERT_EQ(1, mosaic.size());
-  float badnessOneTile = interaction.computeBadness(mosaic, targetImage);
+  float badnessOneTile = interaction.computeBadness(mosaic);
 
   EXPECT_FLOAT_EQ(badnessTwoTiles, 2.0f * badnessOneTile);
 }
