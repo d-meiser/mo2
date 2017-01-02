@@ -22,6 +22,7 @@ add_library(mo_lib
     mosaic_renderer_outline.cpp
     mosaic_renderer_textured.cpp
     mosaic_match.cpp
+    potentiallennardjones.cpp
     renderer.cpp
     run_configuration.cpp
     tile.cpp
