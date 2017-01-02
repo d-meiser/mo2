@@ -87,8 +87,8 @@ void Mosaic::setTargetImage(const TargetImage& img) {
 
 void Mosaic::addTiles(const Tile* tileBegin, const Tile* tileEnd) {
   for (const Tile* t = tileBegin; t != tileEnd; ++t) {
-    tiles_.emplace_back(Tile{t->x_, t->y_, t->angle_, t->scale_,
-        std::unique_ptr<Image>(new Image(*t->image_))});
+    tiles_.emplace_back(std::move(Tile{t->x_, t->y_, t->angle_, t->scale_,
+        std::unique_ptr<Image>(new Image(*t->image_))}));
   }
 
   float totalTileArea = 0.0f;
