@@ -39,8 +39,6 @@ class MosaicMatch::Impl : public Badness {
       Image renderedImage(targetImage.image().width(),
                           targetImage.image().height(), 4);
       framebuffer_->getPixels(renderedImage.getPixelData());
-      renderedImage.setQuality(100);
-      renderedImage.save("renderedImage.jpg");
 
       return renderedImage.distance(targetImage.image());
     }

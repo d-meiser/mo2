@@ -155,9 +155,6 @@ TEST_F(MosaicMatch_F, OrientationMatters) {
   t.angle_ = M_PI;
   float largerBadness = match.computeBadness(mosaic);
 
-  std::cout << smallBadness << std::endl;
-  std::cout << largerBadness << std::endl;
-
   EXPECT_GT(largerBadness, smallBadness);
 }
 
@@ -189,9 +186,6 @@ TEST_F(MosaicMatch_F, WeirdAnglesAreOKToo) {
   // Now compute badness with wrong orientation.
   t.angle_ = 0.97;
   float largerBadness = match.computeBadness(mosaic);
-
-  std::cout << smallBadness << std::endl;
-  std::cout << largerBadness << std::endl;
 
   EXPECT_GT(largerBadness, smallBadness);
 }
