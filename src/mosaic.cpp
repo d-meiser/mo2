@@ -47,6 +47,14 @@ Mosaic::Mosaic(
 
 Mosaic::Mosaic(
     const Image& targetImage,
+    float scale,
+    const Tile* tileBegin, const Tile* tileEnd) :
+  targetImage_(targetImage, scale),
+  tiles_(tileBegin, tileEnd) {
+}
+
+Mosaic::Mosaic(
+    const Image& targetImage,
     float scale) : targetImage_(targetImage, scale) {}
 
 int Mosaic::size() const {

@@ -18,8 +18,7 @@ static const int width = 160;
 static const int height = 120;
 static GLFWwindow* window;
 
-static void key_callback(GLFWwindow* window, int key, int, int action, int)
-{
+static void key_callback(GLFWwindow* window, int key, int, int action, int) {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }

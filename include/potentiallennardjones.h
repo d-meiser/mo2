@@ -3,10 +3,12 @@
 
 #include <lennardjones.h>
 #include <potential.h>
+#include <mo_lib_export.h>
+
 
 namespace Mo {
 
-class PotentialLennardJones : public Potential {
+class MO_LIB_EXPORT PotentialLennardJones : public Potential {
 public:
     PotentialLennardJones(const LennardJones& lennardJones) :
         lennardJones_(lennardJones) {
