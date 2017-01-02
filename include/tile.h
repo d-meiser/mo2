@@ -14,6 +14,7 @@ struct MO_LIB_EXPORT Tile {
   Tile(float x, float y, float angle, float scale,
        std::unique_ptr<Image> image);
   Tile(const Tile&);
+  Tile& operator=(const Tile& rhs);
   float x_;
   float y_;
   float angle_;

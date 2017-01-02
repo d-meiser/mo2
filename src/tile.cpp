@@ -17,6 +17,17 @@ Tile::Tile(const Tile& t) :
   image_.reset(new Image(*t.image_));
 }
 
+Tile& Tile::operator=(const Tile& rhs) {
+  if (this != &rhs) {
+    x_ = rhs.x_;
+    y_ = rhs.y_;
+    angle_ = rhs.angle_;
+    scale_ = rhs.scale_;
+    image_.reset(new Image(*rhs.image_));
+  }
+  return *this;
+}
+
 float Tile::width() const {
   return image_->width() * scale_;
 }
