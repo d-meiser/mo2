@@ -7,6 +7,10 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
+#ifndef M_PI
+#define M_PI 3.14159265359
+#endif
+
 
 namespace {
 
@@ -98,7 +102,6 @@ TEST_F(MosaicMatch_F, HasSmallBadnessForGoodMatch) {
   t.angle_ = 0.0f;
   t.scale_ = 1.0f;
   mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.0f});
-  mosaic.targetImage().image().save("targetImage.jpg");
   EXPECT_LT(match.computeBadness(mosaic), 3.0e-2f);
 }
 
@@ -121,6 +124,75 @@ TEST_F(MosaicMatch_F, BadnessIsLargerIfColorIsWrong) {
     }
   }
   float largerBadness = match.computeBadness(mosaic);
+  EXPECT_GT(largerBadness, smallBadness);
+}
+
+TEST_F(MosaicMatch_F, OrientationMatters) {
+  Mo::MosaicMatch match{renderer_};
+  mosaic.reduceSize(1);
+  auto& t = *mosaic.tilesBegin();
+  t.x_ = 0.0f;
+  t.y_ = 0.0f;
+  t.angle_ = 0.0f;
+  t.scale_ = 1.0f;
+
+  // Create an image that is not rotationally symmetric.
+  Mo::Image* img = mosaic.tilesBegin()->image_.get();
+  unsigned char* pixels = img->getPixelData();
+  int width = img->width();
+  for (int i = 0; i < img->height(); ++i) {
+    for (int j = img->width() / 2; j < img->width(); ++j) {
+      pixels[(i * width + j) * 3 + 0] = 0;
+    }
+  }
+
+  mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.0f});
+
+  // First compute the badness with correct orientation.
+  float smallBadness = match.computeBadness(mosaic);
+
+  // Now compute badness with wrong orientation.
+  t.angle_ = M_PI;
+  float largerBadness = match.computeBadness(mosaic);
+
+  std::cout << smallBadness << std::endl;
+  std::cout << largerBadness << std::endl;
+
+  EXPECT_GT(largerBadness, smallBadness);
+}
+
+TEST_F(MosaicMatch_F, WeirdAnglesAreOKToo) {
+  Mo::MosaicMatch match{renderer_};
+  mosaic.reduceSize(1);
+  auto& t = *mosaic.tilesBegin();
+  t.x_ = 0.0f;
+  t.y_ = 0.0f;
+  t.angle_ = 0.0f;
+  t.scale_ = 1.0f;
+
+  // Create an image that is not rotationally symmetric.
+  Mo::Image* img = mosaic.tilesBegin()->image_.get();
+  unsigned char* pixels = img->getPixelData();
+  int width = img->width();
+  for (int i = 0; i < img->height(); ++i) {
+    for (int j = img->width() / 2; j < img->width(); ++j) {
+      pixels[(i * width + j) * 3 + 0] = 0;
+    }
+  }
+
+  mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.0f});
+  mosaic.targetImage().image().save("targetImage.jpg");
+
+  // First compute the badness with correct orientation.
+  float smallBadness = match.computeBadness(mosaic);
+
+  // Now compute badness with wrong orientation.
+  t.angle_ = 0.97;
+  float largerBadness = match.computeBadness(mosaic);
+
+  std::cout << smallBadness << std::endl;
+  std::cout << largerBadness << std::endl;
+
   EXPECT_GT(largerBadness, smallBadness);
 }
 
