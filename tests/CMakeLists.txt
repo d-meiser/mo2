@@ -38,6 +38,7 @@ set(OPENGL_TESTS
     glfw_test
     gl3w_test
     framebuffer_test
+    initial_guess_test
     mosaic_match_test
     mosaicrenderer_test
     mosaicrendereroutline_test

@@ -11,6 +11,7 @@ add_library(mo_lib
     badnesscomposite.cpp
     framebuffer.cpp
     image.cpp
+    initial_guess.cpp
     interactionhelpers.cpp
     interactiontileborder.cpp
     interactiontiletile.cpp
