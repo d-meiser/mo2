@@ -99,7 +99,7 @@ TEST_F(MosaicMatch_F, HasSmallBadnessForGoodMatch) {
   t.scale_ = 1.0f;
   mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.0f});
   mosaic.targetImage().image().save("targetImage.jpg");
-  EXPECT_LT(match.computeBadness(mosaic), 5.0e-2f);
+  EXPECT_LT(match.computeBadness(mosaic), 3.0e-2f);
 }
 
 TEST_F(MosaicMatch_F, BadnessIsLargerIfColorIsWrong) {
@@ -110,7 +110,7 @@ TEST_F(MosaicMatch_F, BadnessIsLargerIfColorIsWrong) {
   t.y_ = 0.0f;
   t.angle_ = 0.0f;
   t.scale_ = 1.0f;
-  Mo::TargetImage targetImage{*mosaic.cTilesBegin()->image_, 1.0f};
+  mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.0f});
   float smallBadness = match.computeBadness(mosaic);
   Mo::Image* img = mosaic.tilesBegin()->image_.get();
   unsigned char* pixels = img->getPixelData();

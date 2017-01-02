@@ -30,6 +30,8 @@ class MosaicMatch::Impl : public Badness {
       renderer_->setMosaic(model);
       renderer_->setTileImages(model.getTiles());
       framebuffer_->bind();
+      renderer_->setRenderTargetWidth(framebuffer_->width());
+      renderer_->setRenderTargetHeight(framebuffer_->height());
       renderer_->render();
 
       MO_ASSERT(framebuffer_->size() > 0);

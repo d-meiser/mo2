@@ -4,7 +4,6 @@
 #include <mosaic.h>
 #include <GLFW/glfw3.h>
 #include <algorithm>
-#include <iostream>
 
 
 namespace Mo {
@@ -184,12 +183,8 @@ void MosaicRendererTextured::draw() {
   if (viewPortWidth_ < 0) {
     getUniformLocations();
   }
-  int width;
-  int height;
-  GLFWwindow* window = glfwGetCurrentContext();
-  glfwGetFramebufferSize(window, &width, &height);
-  std::cout << width << std::endl;
-  std::cout << height << std::endl;
+  int width = renderTargetWidth();
+  int height = renderTargetHeight();
   glUniform1f(viewPortWidth_, static_cast<float>(width));
   glUniform1f(viewPortHeight_, static_cast<float>(height));
   glUniform1f(magnification_, 1.0f);
