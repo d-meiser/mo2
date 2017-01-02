@@ -98,9 +98,9 @@ struct InitialGuessT : public ::testing::Test {
 };
 
 
-TEST_F(InitialGuessT, GuessHasOneTileIfGivenOneTile) {
+TEST_F(InitialGuessT, GuessHasSameNumberOfTilesAsOriginal) {
   Mo::InitialGuess guesser;
-  mosaic.reduceSize(1);
+  mosaic.reduceSize(6);
   Mo::Mosaic guess{guesser.findInitialGuess(&badness, mosaic)};
   EXPECT_EQ(mosaic.getTiles().size(), guess.getTiles().size());
 }
