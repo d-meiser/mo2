@@ -19,6 +19,7 @@ set(TESTS
     image_scaling_test
     interactiontileborder_test
     interactiontiletile_test
+    lennardjones_test
     mosaic_test
     quadrature_test
     run_configuration_test
