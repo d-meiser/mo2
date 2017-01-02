@@ -13,6 +13,8 @@ class Mosaic;
 
 class MO_LIB_EXPORT MosaicRenderer : public Renderer {
 public:
+  MosaicRenderer(int renderTargetWidth, int renderTargetHeight) :
+    Renderer(renderTargetWidth, renderTargetHeight) {}
   virtual void setMosaic(const Mosaic& mosaic) = 0;
   virtual void setTileImages(const std::vector<Tile>& tiles) = 0;
 };

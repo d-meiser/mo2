@@ -60,7 +60,7 @@ int main(int argn, const char *argv[]) {
       config.tileBegin(),
       config.tileEnd()};
 
-  Mo::MosaicRendererTextured renderer;
+  Mo::MosaicRendererTextured renderer(width, height);
   renderer.setMosaic(mosaic);
   renderer.setTileImages(mosaic.getTiles());
 

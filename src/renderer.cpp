@@ -12,7 +12,11 @@ namespace Mo {
 static void checkShaderCompilationStatus(GLuint shader, GLenum shaderType);
 static void checkShaderLinkStatus(GLuint program);
 
-Renderer::Renderer() : shaderProgram_(0) {}
+Renderer::Renderer(int renderTargetWidth, int renderTargetHeight) :
+    shaderProgram_(0),
+    renderTargetWidth_(renderTargetWidth),
+    renderTargetHeight_(renderTargetHeight)
+    {}
 
 Renderer::~Renderer() {
   if (shaderProgram_) {
@@ -109,6 +113,22 @@ void checkShaderLinkStatus(GLuint program) {
 
     throw std::runtime_error(errorMessage.str());
   }
+}
+
+int Renderer::renderTargetWidth() const {
+  return renderTargetWidth_;
+}
+
+void Renderer::setRenderTargetWidth(int renderTargetWidth) {
+  renderTargetWidth_ = renderTargetWidth;
+}
+
+int Renderer::renderTargetHeight() const {
+  return renderTargetHeight_;
+}
+
+void Renderer::setRenderTargetHeight(int renderTargetHeight) {
+  renderTargetHeight_ = renderTargetHeight;
 }
 
 

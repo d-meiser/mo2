@@ -12,7 +12,7 @@ namespace Mo {
 
 class MO_LIB_EXPORT MosaicRendererTextured : public MosaicRenderer {
 public:
-  MosaicRendererTextured();
+  MosaicRendererTextured(int renderTargetWidth, int renderTargetHeight);
   ~MosaicRendererTextured();
   void setMosaic(const Mosaic& mosaic) override;
   void setTileImages(const std::vector<Tile>& tiles) override;

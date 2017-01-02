@@ -66,7 +66,9 @@ static const char fShaderSource[] =
     "}\n"
     ;
 
-MosaicRendererOutline::MosaicRendererOutline() :
+MosaicRendererOutline::MosaicRendererOutline(
+    int renderTargetWidth, int renderTargetHeight) :
+    MosaicRenderer(renderTargetWidth, renderTargetHeight),
     vbo_(0),
     vao_(0),
     glBuffersUpToDate_(false),

@@ -8,6 +8,13 @@
 using Mo::Testing::testFile;
 
 
+namespace {
+
+int width = 640;
+int height = 480;
+
+}
+
 static GLFWwindow* window;
 
 static void key_callback(GLFWwindow* window, int key, int, int action, int)
@@ -21,7 +28,9 @@ TEST(renderer, IncludeTest) { }
 
 class PassThroughRenderer : public Mo::Renderer {
 public:
-  PassThroughRenderer() : framecount_(0) {
+  PassThroughRenderer() : 
+      Mo::Renderer(width, height),
+      framecount_(0) {
     glGenVertexArrays(1, &vao_);
     glBindVertexArray(vao_);
   }
@@ -104,7 +113,7 @@ int main(int argn, char* argv[]) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_VISIBLE, false);
-  window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+  window = glfwCreateWindow(width, height, "Simple example", NULL, NULL);
   glfwMakeContextCurrent(window);
 
   glfwSetKeyCallback(window, key_callback);

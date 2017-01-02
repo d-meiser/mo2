@@ -11,7 +11,7 @@ namespace Mo {
 
 class MO_LIB_EXPORT MosaicRendererOutline : public MosaicRenderer {
 public:
-  MosaicRendererOutline();
+  MosaicRendererOutline(int renderTargetWidth, int renderTargetHeight);
   ~MosaicRendererOutline();
   void setMosaic(const Mosaic& mosaic) override;
   void setTileImages(const std::vector<Tile>& tiles) override;

@@ -72,11 +72,11 @@ TEST_F(MosaicRendererTextured, IncludeTest) {
 }
 
 TEST_F(MosaicRendererTextured, ConstructorTest) {
-  Mo::MosaicRendererTextured renderer;
+  Mo::MosaicRendererTextured renderer(width, height);
 }
 
 TEST_F(MosaicRendererTextured, CanRender) {
-  Mo::MosaicRendererTextured renderer;
+  Mo::MosaicRendererTextured renderer(width, height);
   renderer.setMosaic(mosaic);
   renderer.setTileImages(mosaic.getTiles());
 
@@ -102,7 +102,7 @@ TEST_F(MosaicRendererTextured, CanRender) {
 }
 
 TEST_F(MosaicRendererTextured, CanSetTilesTwice) {
-  Mo::MosaicRendererTextured renderer;
+  Mo::MosaicRendererTextured renderer(width, height);
   renderer.setMosaic(mosaic);
   renderer.setTileImages(mosaic.getTiles());
   renderer.setTileImages(mosaic.getTiles());

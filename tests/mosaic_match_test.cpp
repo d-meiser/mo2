@@ -65,7 +65,7 @@ struct MosaicRendererTextured : public ::testing::Test {
 
 struct MosaicMatch_F : public MosaicRendererTextured {
   MosaicMatch_F() :
-    renderer_{std::make_shared<Mo::MosaicRendererTextured>()}
+    renderer_{std::make_shared<Mo::MosaicRendererTextured>(width, height)}
     {}
 
   void SetUp() override {
@@ -96,9 +96,9 @@ TEST_F(MosaicMatch_F, HasSmallBadnessForGoodMatch) {
   t.x_ = 0.0f;
   t.y_ = 0.0f;
   t.angle_ = 0.0f;
-  t.scale_ = 3.0f;
-  Mo::TargetImage targetImage{*mosaic.cTilesBegin()->image_, 1.0f};
-  targetImage.image().save("targetImage.jpg");
+  t.scale_ = 1.0f;
+  mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.0f});
+  mosaic.targetImage().image().save("targetImage.jpg");
   EXPECT_LT(match.computeBadness(mosaic), 5.0e-2f);
 }
 

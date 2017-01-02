@@ -4,6 +4,7 @@
 #include <mosaic.h>
 #include <GLFW/glfw3.h>
 #include <algorithm>
+#include <iostream>
 
 
 namespace Mo {
@@ -92,7 +93,9 @@ static const char fShaderSource[] =
     "}\n"
     ;
 
-MosaicRendererTextured::MosaicRendererTextured() :
+MosaicRendererTextured::MosaicRendererTextured(
+    int renderTargetWidth, int renderTargetHeight) :
+    MosaicRenderer(renderTargetWidth, renderTargetHeight),
     vbo_(0),
     vao_(0),
     tileTextures_(0),
@@ -178,7 +181,6 @@ void MosaicRendererTextured::draw() {
   glClearBufferfv(GL_DEPTH, 0, &one);
   MO_CHECK_GL_ERROR;
 
-
   if (viewPortWidth_ < 0) {
     getUniformLocations();
   }
@@ -186,6 +188,8 @@ void MosaicRendererTextured::draw() {
   int height;
   GLFWwindow* window = glfwGetCurrentContext();
   glfwGetFramebufferSize(window, &width, &height);
+  std::cout << width << std::endl;
+  std::cout << height << std::endl;
   glUniform1f(viewPortWidth_, static_cast<float>(width));
   glUniform1f(viewPortHeight_, static_cast<float>(height));
   glUniform1f(magnification_, 1.0f);
