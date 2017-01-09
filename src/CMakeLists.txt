@@ -20,6 +20,7 @@ add_library(mo_lib
     gl3w.c
     mosaic.cpp
     mosaic_renderer_outline.cpp
+    mosaic_renderer_targetimage.cpp
     mosaic_renderer_textured.cpp
     mosaic_match.cpp
     potentiallennardjones.cpp

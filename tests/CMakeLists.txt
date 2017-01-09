@@ -43,6 +43,7 @@ set(OPENGL_TESTS
     mosaic_match_test
     mosaicrenderer_test
     mosaicrendereroutline_test
+    mosaicrenderertargetimage_test
     mosaicrenderertextured_test
     renderer_test
     )
