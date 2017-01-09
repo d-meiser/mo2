@@ -4,12 +4,15 @@
 #include <mosaic_match.h>
 #include <mosaic_renderer.h>
 #include <mosaic_renderer_textured.h>
+#include <mosaic_renderer_outline.h>
 #include <badnesscomposite.h>
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 #include <potentiallennardjones.h>
 #include <interactiontileborder.h>
 #include <interactiontiletile.h>
+#include <framebuffer.h>
+
 
 namespace {
 
@@ -62,7 +65,9 @@ struct InitialGuessT : public ::testing::Test {
 
   InitialGuessT() :
     mosaic(Mo::Image(width, height), 1.4f),
-    renderer{std::make_shared<Mo::MosaicRendererTextured>(width, height)}
+    renderer{std::make_shared<Mo::MosaicRendererTextured>(width, height)},
+    framebuffer{static_cast<int>(mosaic.targetImage().width()),
+                static_cast<int>(mosaic.targetImage().height())}
   {}
 
   virtual void SetUp() {
@@ -95,6 +100,7 @@ struct InitialGuessT : public ::testing::Test {
   Mo::Mosaic mosaic;
   Mo::BadnessComposite badness;
   std::shared_ptr<Mo::MosaicRenderer> renderer;
+  Mo::Framebuffer framebuffer;
 };
 
 
@@ -103,6 +109,68 @@ TEST_F(InitialGuessT, GuessHasSameNumberOfTilesAsOriginal) {
   mosaic.reduceSize(6);
   Mo::Mosaic guess{guesser.findInitialGuess(&badness, mosaic)};
   EXPECT_EQ(mosaic.getTiles().size(), guess.getTiles().size());
+}
+
+TEST_F(InitialGuessT, GuessIsPlausibleForOneTile) {
+  Mo::InitialGuess guesser;
+  mosaic.reduceSize(1);
+  Mo::Mosaic guess{guesser.findInitialGuess(&badness, mosaic)};
+
+  renderer->setMosaic(guess);
+  renderer->setTileImages(guess.getTiles());
+  framebuffer.bind();
+  renderer->render();
+  Mo::Image renderedMosaic(framebuffer.width(), framebuffer.height(), 4);
+  framebuffer.getPixels(renderedMosaic.getPixelData());
+  renderedMosaic.save("renderedMosaic.jpg");
+
+/*
+  std::shared_ptr<Mo::MosaicRenderer>
+      outlineRenderer{std::make_shared<Mo::MosaicRendererOutline>(
+          framebuffer.width(),
+          framebuffer.height())};
+  auto t = guess.tilesEnd();
+  t--;
+  t->x_ = 0;
+  t->y_ = 0;
+  outlineRenderer->setMosaic(guess);
+  outlineRenderer->setTileImages(guess.getTiles());
+  framebuffer.bind();
+  outlineRenderer->render();
+  framebuffer.getPixels(renderedMosaic.getPixelData());
+  renderedMosaic.save("renderedMosaicOutline.jpg");
+*/
+}
+
+TEST_F(InitialGuessT, GuessIsPlausibleForSeveralTiles) {
+  Mo::InitialGuess guesser;
+  mosaic.reduceSize(5);
+  Mo::Mosaic guess{guesser.findInitialGuess(&badness, mosaic)};
+
+  renderer->setMosaic(guess);
+  renderer->setTileImages(guess.getTiles());
+  framebuffer.bind();
+  renderer->render();
+  Mo::Image renderedMosaic(framebuffer.width(), framebuffer.height(), 4);
+  framebuffer.getPixels(renderedMosaic.getPixelData());
+  renderedMosaic.save("renderedMosaic10.jpg");
+
+/*
+  std::shared_ptr<Mo::MosaicRenderer>
+      outlineRenderer{std::make_shared<Mo::MosaicRendererOutline>(
+          framebuffer.width(),
+          framebuffer.height())};
+  auto t = guess.tilesEnd();
+  t--;
+  t->x_ = 0;
+  t->y_ = 0;
+  outlineRenderer->setMosaic(guess);
+  outlineRenderer->setTileImages(guess.getTiles());
+  framebuffer.bind();
+  outlineRenderer->render();
+  framebuffer.getPixels(renderedMosaic.getPixelData());
+  renderedMosaic.save("renderedMosaicOutline.jpg");
+*/
 }
 
 }

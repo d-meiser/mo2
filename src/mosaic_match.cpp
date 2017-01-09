@@ -36,9 +36,10 @@ class MosaicMatch::Impl : public Badness {
 
       MO_ASSERT(framebuffer_->size() > 0);
       const auto& targetImage = model.targetImage();
-      Image renderedImage(targetImage.image().width(),
-                          targetImage.image().height(), 4);
+      Image renderedImage(targetImage.width(),
+                          targetImage.height(), 4);
       framebuffer_->getPixels(renderedImage.getPixelData());
+      renderedImage.save("renderedImage.jpg");
 
       return renderedImage.distance(targetImage.image());
     }
@@ -48,8 +49,8 @@ class MosaicMatch::Impl : public Badness {
     std::unique_ptr<Framebuffer> framebuffer_;
 
     void ensureFrameBufferSizeIsCorrect(const TargetImage& targetImage) {
-      int width = targetImage.image().width();
-      int height = targetImage.image().height();
+      int width = targetImage.width();
+      int height = targetImage.height();
       if (!framebuffer_ ||
           width != framebuffer_->width() ||
           height != framebuffer_->height()) {
