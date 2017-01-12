@@ -12,6 +12,7 @@
 #include <interactiontileborder.h>
 #include <interactiontiletile.h>
 #include <framebuffer.h>
+#include <utilities.h>
 
 
 namespace {
@@ -120,9 +121,7 @@ TEST_F(InitialGuessT, GuessIsPlausibleForOneTile) {
   renderer->setTileImages(guess.getTiles());
   framebuffer.bind();
   renderer->render();
-  Mo::Image renderedMosaic(framebuffer.width(), framebuffer.height(), 4);
-  framebuffer.getPixels(renderedMosaic.getPixelData());
-  renderedMosaic.save("renderedMosaic.jpg");
+  Mo::dumpFramebuffer(framebuffer, "renderedMosaic.jpg");
 
 /*
   std::shared_ptr<Mo::MosaicRenderer>
