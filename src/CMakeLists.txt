@@ -27,6 +27,7 @@ add_library(mo_lib
     renderer.cpp
     run_configuration.cpp
     tile.cpp
+    utilities.cpp
     )
 target_link_libraries(mo_lib
     ${JPEG_LIBRARIES}
