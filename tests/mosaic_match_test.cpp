@@ -189,6 +189,37 @@ TEST_F(MosaicMatch_F, WeirdAnglesAreOKToo) {
   EXPECT_GT(largerBadness, smallBadness);
 }
 
+TEST_F(MosaicMatch_F, WorksForNonUnitScales) {
+  Mo::MosaicMatch match{renderer_};
+  mosaic.reduceSize(1);
+  auto& t = *mosaic.tilesBegin();
+  t.x_ = 0.0f;
+  t.y_ = 0.0f;
+  t.angle_ = 0.0f;
+  t.scale_ = 1.0f;
+
+  // Create an image that is not rotationally symmetric.
+  Mo::Image* img = mosaic.tilesBegin()->image_.get();
+  unsigned char* pixels = img->getPixelData();
+  int width = img->width();
+  for (int i = 0; i < img->height(); ++i) {
+    for (int j = img->width() / 2; j < img->width(); ++j) {
+      pixels[(i * width + j) * 3 + 0] = 0;
+    }
+  }
+
+  mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.7f});
+  mosaic.targetImage().image().save("targetImage.jpg");
+
+  // First compute the badness with correct orientation.
+  float smallBadness = match.computeBadness(mosaic);
+
+  // Now compute badness with wrong orientation.
+  t.angle_ = 0.97;
+  float largerBadness = match.computeBadness(mosaic);
+
+  EXPECT_GT(largerBadness, smallBadness);
+}
 
 int main(int argn, char* argv[]) {
   ::testing::InitGoogleTest(&argn, argv);
