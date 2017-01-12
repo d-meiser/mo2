@@ -18,6 +18,8 @@ public:
 private:
   GLuint targetImageTexture_;
   GLuint vao_;
+  int width_;
+  int height_;
 
   const char* vertexShaderSource() override;
   const char* fragmentShaderSource() override;

@@ -72,7 +72,9 @@ MosaicRendererTargetImage::MosaicRendererTargetImage(
     int renderTargetWidth, int renderTargetHeight) :
     MosaicRenderer(renderTargetWidth, renderTargetHeight),
     targetImageTexture_(0),
-    vao_(0)
+    vao_(0),
+    width_(0),
+    height_(0)
 {}
 
 MosaicRendererTargetImage::~MosaicRendererTargetImage() {
@@ -87,18 +89,25 @@ MosaicRendererTargetImage::~MosaicRendererTargetImage() {
 }
 
 void MosaicRendererTargetImage::setMosaic(const Mosaic& mosaic) {
-  // TODO: Cache width and height of texture so we don't have
-  // to reallocate texture sizes all the time.
-  targetImageTexture_ = createTexture(targetImageTexture_);
-  glBindTexture(GL_TEXTURE_2D, targetImageTexture_);
-  MO_CHECK_GL_ERROR;
-
   int width = mosaic.targetImage().width();
   width = nextPowerOfTwo(width);
   int height = mosaic.targetImage().height();
   height = nextPowerOfTwo(height);
-  glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
-  MO_CHECK_GL_ERROR;
+  MO_ASSERT(width * height > 0);
+
+  if (width_ != width || height_ != height) {
+    glBindTexture(GL_TEXTURE_2D, 0);
+    if (targetImageTexture_ && glIsTexture(targetImageTexture_)) {
+      glDeleteTextures(1, &targetImageTexture_);
+    }
+    targetImageTexture_ = 0;
+    targetImageTexture_ = createTexture(targetImageTexture_);
+    glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
+    MO_CHECK_GL_ERROR;
+
+    width_ = width;
+    height_ = height;
+  }
 
   Image img(width, height);
   mosaic.targetImage().image().stretch(width, height, img.getPixelData());
