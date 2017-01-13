@@ -177,7 +177,6 @@ TEST_F(MosaicMatch_F, WeirdAnglesAreOKToo) {
   }
 
   mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.0f});
-  mosaic.targetImage().image().save("targetImage.jpg");
 
   // First compute the badness with correct orientation.
   float smallBadness = match.computeBadness(mosaic);
@@ -209,7 +208,6 @@ TEST_F(MosaicMatch_F, WorksForNonUnitScales) {
   }
 
   mosaic.setTargetImage(Mo::TargetImage{*mosaic.cTilesBegin()->image_, 1.7f});
-  mosaic.targetImage().image().save("targetImage.jpg");
 
   // First compute the badness with correct orientation.
   float smallBadness = match.computeBadness(mosaic);

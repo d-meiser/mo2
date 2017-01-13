@@ -41,17 +41,8 @@ class MosaicMatch::Impl : public Badness {
       }
 
       framebuffer_->bind();
-
       Image renderedMosaic{renderMosaic(renderer_.get(), mosaic)};
-      renderedMosaic.save("renderedMosaic.jpg");
-
-      targetImageRenderer_->setRenderTargetWidth(framebuffer_->width());
-      targetImageRenderer_->setRenderTargetHeight(framebuffer_->height());
-      targetImageRenderer_->render();
-
       Image targetImage{renderMosaic(targetImageRenderer_.get(), mosaic)};
-      targetImage.save("targetImage.jpg");
-
       return renderedMosaic.distance(targetImage);
     }
 

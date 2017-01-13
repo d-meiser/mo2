@@ -102,6 +102,8 @@ void MosaicRendererTargetImage::setMosaic(const Mosaic& mosaic) {
     }
     targetImageTexture_ = 0;
     targetImageTexture_ = createTexture(targetImageTexture_);
+    glBindTexture(GL_TEXTURE_2D, targetImageTexture_);
+    MO_CHECK_GL_ERROR;
     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, width, height);
     MO_CHECK_GL_ERROR;
 
@@ -111,6 +113,8 @@ void MosaicRendererTargetImage::setMosaic(const Mosaic& mosaic) {
 
   Image img(width, height);
   mosaic.targetImage().image().stretch(width, height, img.getPixelData());
+  glBindTexture(GL_TEXTURE_2D, targetImageTexture_);
+  MO_CHECK_GL_ERROR;
   glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB,
                   GL_UNSIGNED_BYTE, img.getConstPixelData());
   MO_CHECK_GL_ERROR;
@@ -140,6 +144,12 @@ void MosaicRendererTargetImage::bindVAO() {
 
 void MosaicRendererTargetImage::draw() {
   MO_CHECK_GL_ERROR;
+  const GLfloat color[] = {0.2f, 0.2f, 0.2f, 1.0f};
+  glClearBufferfv(GL_COLOR, 0, color);
+  const float one = 1.0f;
+  glClearBufferfv(GL_DEPTH, 0, &one);
+  MO_CHECK_GL_ERROR;
+
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   MO_CHECK_GL_ERROR;
 }
