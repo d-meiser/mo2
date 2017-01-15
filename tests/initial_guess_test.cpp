@@ -44,16 +44,20 @@ void fillImage(int i, Mo::Image* img) {
 
 std::unique_ptr<Mo::Badness> createTileBorderInteraction() {
   std::unique_ptr<Mo::Potential> potential{
-    new Mo::PotentialLennardJones{Mo::LennardJones{5.0, 1.0}}};
-  return std::unique_ptr<Mo::Badness>{new
+    new Mo::PotentialLennardJones{Mo::LennardJones{5.0, 10.0}}};
+  Mo::InteractionTileBorder* badness{new
     Mo::InteractionTileBorder{std::move(potential)}};
+  badness->setBorder(0.8);
+  return std::unique_ptr<Mo::Badness>{badness};
 }
 
 std::unique_ptr<Mo::Badness> createTileTileInteraction() {
   std::unique_ptr<Mo::Potential> potential{
-    new Mo::PotentialLennardJones{Mo::LennardJones{5.0, 1.0}}};
-  return std::unique_ptr<Mo::Badness>{new
+    new Mo::PotentialLennardJones{Mo::LennardJones{5.0, 10.0}}};
+  Mo::InteractionTileTile* badness{new
     Mo::InteractionTileTile{std::move(potential)}};
+  badness->setBorder(0.8);
+  return std::unique_ptr<Mo::Badness>{badness};
 }
 
 std::unique_ptr<Mo::Badness>
@@ -122,28 +126,11 @@ TEST_F(InitialGuessT, GuessIsPlausibleForOneTile) {
   framebuffer.bind();
   renderer->render();
   Mo::dumpFramebuffer(framebuffer, "renderedMosaic.jpg");
-
-/*
-  std::shared_ptr<Mo::MosaicRenderer>
-      outlineRenderer{std::make_shared<Mo::MosaicRendererOutline>(
-          framebuffer.width(),
-          framebuffer.height())};
-  auto t = guess.tilesEnd();
-  t--;
-  t->x_ = 0;
-  t->y_ = 0;
-  outlineRenderer->setMosaic(guess);
-  outlineRenderer->setTileImages(guess.getTiles());
-  framebuffer.bind();
-  outlineRenderer->render();
-  framebuffer.getPixels(renderedMosaic.getPixelData());
-  renderedMosaic.save("renderedMosaicOutline.jpg");
-*/
 }
 
 TEST_F(InitialGuessT, GuessIsPlausibleForSeveralTiles) {
   Mo::InitialGuess guesser;
-  mosaic.reduceSize(5);
+  mosaic.reduceSize(9);
   Mo::Mosaic guess{guesser.findInitialGuess(&badness, mosaic)};
 
   renderer->setMosaic(guess);

@@ -8,7 +8,9 @@
 namespace Mo {
 
 InteractionTileTile::InteractionTileTile(
-    std::unique_ptr<Potential> potential) : potential_(std::move(potential)) {
+    std::unique_ptr<Potential> potential) :
+  potential_(std::move(potential)),
+  border_(1.0f) {
 }
 
 float InteractionTileTile::computeBadness(const Mosaic &model) {
@@ -23,7 +25,8 @@ float InteractionTileTile::computeBadness(const Mosaic &model) {
           t1->angle_, t1->scale_,
           t2->x_, t2->y_, t2->image_->width(), t2->image_->height(),
           t2->angle_, t2->scale_,
-          potential_.get());
+          potential_.get(),
+          border_);
     }
   }
   return badness;
@@ -31,6 +34,14 @@ float InteractionTileTile::computeBadness(const Mosaic &model) {
 
 void InteractionTileTile::resetPotential(std::unique_ptr<Potential> potential) {
   potential_ = std::move(potential);
+}
+
+float InteractionTileTile::getBorder() const {
+  return border_;
+}
+
+void InteractionTileTile::setBorder(float border) {
+  border_ = border; 
 }
 
 }

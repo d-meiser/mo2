@@ -8,7 +8,8 @@ namespace Mo {
 float computeBadnessPair(
     float x0, float y0, float w0, float h0, float alpha0, float scale0,
     float x1, float y1, float w1, float h1, float alpha1, float scale1,
-    Potential* potential) {
+    Potential* potential,
+    float border) {
 
   float range = potential->range();
   if (range > 0) {
@@ -40,8 +41,8 @@ float computeBadnessPair(
   float r1[order][order][2];
   for (int ix = 0; ix < order; ++ix) {
     for (int iy = 0; iy < order; ++iy) {
-      r1[ix][iy][0] = 0.5f * nodes[ix];
-      r1[ix][iy][1] = 0.5f * nodes[iy];
+      r1[ix][iy][0] = 0.5f * border * nodes[ix];
+      r1[ix][iy][1] = 0.5f * border * nodes[iy];
       transformToWorldCoordinates(x0, y0, w0, h0, alpha0, scale0,
           r1[ix][iy]);
     }
@@ -51,8 +52,8 @@ float computeBadnessPair(
   float r2[order][order][2];
   for (int ix = 0; ix < order; ++ix) {
     for (int iy = 0; iy < order; ++iy) {
-      r2[ix][iy][0] = 0.5f * nodes[ix];
-      r2[ix][iy][1] = 0.5f * nodes[iy];
+      r2[ix][iy][0] = 0.5f * border * nodes[ix];
+      r2[ix][iy][1] = 0.5f * border * nodes[iy];
       transformToWorldCoordinates(x1, y1, w1, h1, alpha1, scale1,
           r2[ix][iy]);
     }

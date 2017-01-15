@@ -12,7 +12,8 @@ namespace Mo {
 
 InteractionTileBorder::InteractionTileBorder(
         std::unique_ptr<Potential> potential) :
-    potential_(std::move(potential)) {
+  potential_(std::move(potential)),
+  border_(1.0f) {
 }
 
 float InteractionTileBorder::computeBadness(
@@ -42,7 +43,8 @@ float InteractionTileBorder::computeBadness(
         computeBadnessPair(x0, y0, width0, height0, 0.0f, 1.0f,
             t->x_, t->y_, t->image_->width(), t->image_->height(),
             t->angle_, t->scale_,
-            potential_.get());
+            potential_.get(),
+            border_);
     }
   }
 
@@ -59,7 +61,8 @@ float InteractionTileBorder::computeBadness(
         computeBadnessPair(x0, y0, width0, height0, 0.0f, 1.0f,
             t->x_, t->y_, t->image_->width(), t->image_->height(),
             t->angle_, t->scale_,
-            potential_.get());
+            potential_.get(),
+            border_);
     }
   }
 
@@ -76,7 +79,8 @@ float InteractionTileBorder::computeBadness(
         computeBadnessPair(x0, y0, width0, height0, 0.0f, 1.0f,
             t->x_, t->y_, t->image_->width(), t->image_->height(),
             t->angle_, t->scale_,
-            potential_.get());
+            potential_.get(),
+            border_);
     }
   }
 
@@ -93,7 +97,8 @@ float InteractionTileBorder::computeBadness(
         computeBadnessPair(x0, y0, width0, height0, 0.0f, 1.0f,
             t->x_, t->y_, t->image_->width(), t->image_->height(),
             t->angle_, t->scale_,
-            potential_.get());
+            potential_.get(),
+            border_);
     }
   }
 
@@ -103,6 +108,14 @@ float InteractionTileBorder::computeBadness(
 void InteractionTileBorder::resetPotential(
     std::unique_ptr<Potential> potential) {
   potential_ = std::move(potential);
+}
+
+float InteractionTileBorder::getBorder() const {
+  return border_;
+}
+
+void InteractionTileBorder::setBorder(float border) {
+  border_ = border;
 }
 
 }

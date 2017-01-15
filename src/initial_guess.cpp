@@ -35,14 +35,7 @@ void insertTile(Badness* badness, Mosaic* mosaic,
       t->x_ = x;
       t->y_ = y;
       float b = badness->computeBadness(*mosaic);
-      std::cout << " ------ \n";
-      std::cout << t->x_ << std::endl;
-      std::cout << t->y_ << std::endl;
-      std::cout << t->angle_ << std::endl;
-      std::cout << t->scale_ << std::endl;
-      std::cout << t->width() << std::endl;
-      std::cout << t->height() << std::endl;
-      std::cout << " b == " << b << std::endl;
+      dumpMosaic(*mosaic, "currentMosaic.jpg");
       if (b < bestBadness) {
         bestBadness = b;
         bestX = x;
@@ -55,15 +48,7 @@ void insertTile(Badness* badness, Mosaic* mosaic,
 
   t->x_ = bestX;
   t->y_ = bestY;
-
-  std::cout << " ------ Chosen Tile:" << std::endl;
-  std::cout << " >>> " << t->x_ << std::endl;
-  std::cout << " >>> " << t->y_ << std::endl;
-  std::cout << " >>> " << t->angle_ << std::endl;
-  std::cout << " >>> " << t->scale_ << std::endl;
-  std::cout << " >>> " << t->width() << std::endl;
-  std::cout << " >>> " << t->height() << std::endl;
-  std::cout << "---------------"<< std::endl;
+  dumpMosaic(*mosaic, "currentMosaic.jpg");
 }
 
 }
